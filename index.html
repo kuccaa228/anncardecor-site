@@ -1,5 +1,6 @@
 
-<!doctype html>
+
+    <!doctype html>
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
@@ -21,9 +22,6 @@
       --blue:#39a0ff;
       --violet:#a855f7;
       --pink:#ff4fd8;
-
-      --good:#4ade80;
-      --bad:#fb7185;
 
       --shadow: 0 20px 80px rgba(0,0,0,.55);
       --radius: 22px;
@@ -61,7 +59,9 @@
       transform: translateZ(0);
     }
 
-    /* ✅ Слой 2: dithering/noise — убирает полосы (banding) */
+    /* ✅ Слой 2: noise / dithering (убирает полосы в градиенте)
+       - на ПК делаем слабее (чтобы не было "зерна")
+       - на телефоне чуть сильнее */
     body::before{
       content:"";
       position:fixed;
@@ -69,17 +69,22 @@
       pointer-events:none;
       z-index:-2;
 
-      /* ВАЖНО: noise в SVG (без внешних файлов) */
       background-image:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.85'/%3E%3C/svg%3E");
-      background-size:300px 300px;
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='900'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='900' height='900' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+      background-size:900px 900px;
 
-      opacity:.12;           /* усилено (было слабее) */
+      opacity:.08;
       mix-blend-mode: soft-light;
       transform: translateZ(0);
     }
+    @media (min-width: 900px){
+      body::before{ opacity:.04; }
+    }
+    @media (max-width: 899px){
+      body::before{ opacity:.09; }
+    }
 
-    /* Плавающая аура — чисто для красоты, тоже помогает плавности */
+    /* Плавающая аура — помогает плавности + красиво */
     .aurora{
       position:fixed; inset:-30vh -30vw;
       background:
@@ -106,19 +111,29 @@
       background: rgba(7,8,20,.58);
       border-bottom: 1px solid rgba(255,255,255,.06);
       z-index:10;
+
+      /* ✅ safe-area для iPhone */
+      padding-top: env(safe-area-inset-top);
     }
     .nav{
       display:flex; align-items:center; justify-content:space-between;
-      padding:14px 0;
       gap:12px;
+
+      /* ✅ учитываем safe-area и делаем перенос */
+      padding: calc(12px + env(safe-area-inset-top)) 0 12px;
+      flex-wrap: wrap;
     }
 
     .brand{
       display:flex; align-items:center; gap:12px;
       letter-spacing:.4px;
-      min-width: 220px;
+
+      /* ✅ чтобы не ломало шапку */
+      flex: 1 1 auto;
+      min-width: 180px;
     }
 
+    /* Аватар: положи avatar.png рядом с index.html */
     .avatar{
       width:42px; height:42px;
       border-radius:16px;
@@ -126,11 +141,13 @@
       border:1px solid rgba(255,255,255,.16);
       box-shadow: 0 0 0 1px rgba(255,255,255,.10), 0 14px 40px rgba(57,160,255,.14);
       background: linear-gradient(135deg, rgba(57,160,255,.35), rgba(168,85,247,.35));
+      flex: 0 0 auto;
     }
 
     .brandTitle{
       font-weight:800;
       display:flex; flex-direction:column; line-height:1.05;
+      min-width: 0;
     }
     .brandTitle small{ color:var(--muted); font-weight:600; font-size:12px; margin-top:2px; }
 
@@ -138,11 +155,22 @@
       display:flex; gap:18px; align-items:center;
       color:var(--muted);
       font-size:14px;
+      flex: 0 0 auto;
     }
     .navLinks a{ padding:8px 10px; border-radius:12px; }
     .navLinks a:hover{ background: rgba(255,255,255,.06); color:var(--text); }
 
-    .cta{ display:flex; gap:10px; align-items:center; }
+    .cta{
+      display:flex;
+      gap:10px;
+      align-items:center;
+
+      /* ✅ перенос кнопок и выравнивание вправо */
+      flex: 1 1 auto;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
     .btn{
       border:none; cursor:pointer;
       padding:10px 14px;
@@ -156,6 +184,7 @@
       align-items:center;
       gap:8px;
       backdrop-filter: blur(8px);
+      white-space: nowrap;
     }
     .btn:hover{ background: rgba(255,255,255,.10); }
 
@@ -198,6 +227,7 @@
     }
     .heroMain{ padding:26px 26px 22px; overflow:hidden; position:relative; }
 
+    /* ✅ Заголовок: сначала АннКарДекор, ниже — фраза */
     .heroBrand{
       font-weight:900;
       letter-spacing:.2px;
@@ -477,14 +507,24 @@
       align-items:center;
     }
 
+    /* ✅ мобильные адаптации */
     @media (max-width: 920px){
       .heroGrid{ grid-template-columns: 1fr; }
       .gallery{ grid-template-columns: 1fr; }
       .thumbs{ grid-template-columns: 1fr 1fr; }
       .grid3{ grid-template-columns: 1fr; }
       .forms{ grid-template-columns: 1fr; }
+
+      /* меню скрываем чтобы не давило шапку */
       .navLinks{ display:none; }
-      .brand{ min-width: 0; }
+    }
+
+    @media (max-width: 520px){
+      /* на маленьких экранах убираем кнопку копирования,
+         чтобы шапка не ломалась */
+      #copyPhoneBtn{ display:none; }
+
+      .btn{ padding:10px 12px; }
     }
   </style>
 </head>
@@ -967,4 +1007,3 @@
   </script>
 </body>
 </html>
-
