@@ -21,23 +21,27 @@
     }
 
     *{ box-sizing:border-box; }
+
+    /* ✅ ВЕЗДЕ Times New Roman (толщину/цвета не меняем) */
+    html, body, button, input, textarea, select{
+      font-family: "Times New Roman", Times, serif;
+    }
+
     html,body{ height:100%; }
     body{
       margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
       color:var(--text);
       background: #070814;
       overflow-x:hidden;
     }
 
-    /* ✅ Слой 1: большой плавный фон */
+    /* фон */
     body::after{
       content:"";
       position:fixed;
       inset:-20vh -20vw;
       z-index:-3;
       pointer-events:none;
-
       background:
         radial-gradient(1200px 700px at 12% 20%, rgba(57,160,255,.28), transparent 65%),
         radial-gradient(1100px 700px at 85% 25%, rgba(168,85,247,.30), transparent 66%),
@@ -45,23 +49,18 @@
         radial-gradient(900px 600px at 35% 65%, rgba(57,160,255,.12), transparent 70%),
         radial-gradient(900px 700px at 70% 70%, rgba(168,85,247,.12), transparent 72%),
         linear-gradient(180deg, var(--bg0) 0%, #070a1b 45%, var(--bg1) 100%);
-
       filter: blur(18px);
       transform: translateZ(0);
     }
-
-    /* ✅ Слой 2: noise / dithering (убирает “полосатость” градиента) */
     body::before{
       content:"";
       position:fixed;
       inset:0;
       pointer-events:none;
       z-index:-2;
-
       background-image:
         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='900'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='900' height='900' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
       background-size:900px 900px;
-
       opacity:.08;
       mix-blend-mode: soft-light;
       transform: translateZ(0);
@@ -97,60 +96,41 @@
       z-index:10;
       padding-top: env(safe-area-inset-top);
     }
-    .nav{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:12px;
+
+    /* ✅ Новая шапка: АннКарДекор слева, меню по центру, справа кнопки */
+    .navBar{
+      display:grid;
+      grid-template-columns: auto 1fr auto;
+      align-items:center;
+      gap:14px;
       padding: calc(12px + env(safe-area-inset-top)) 0 12px;
-      flex-wrap: wrap;
     }
 
-    .brand{
-      display:flex; align-items:center; gap:12px;
-      letter-spacing:.4px;
-      flex: 1 1 auto;
-      min-width: 200px;
-    }
-
-    .avatarSmall{
-      width:44px;
-      height:44px;
-      border-radius:14px;
-      object-fit:cover;
-      border:1px solid rgba(255,255,255,.18);
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,.10),
-        0 14px 35px rgba(57,160,255,.18);
-      background: linear-gradient(135deg, rgba(57,160,255,.35), rgba(168,85,247,.35));
-      flex: 0 0 auto;
-    }
-
-    .brandTitle{
+    .brandText{
       font-weight:900;
-      font-size:18px;
       letter-spacing:.5px;
-      display:flex;
-      flex-direction:column;
-      line-height:1.05;
-      min-width: 0;
+      font-size:20px; /* высота подобрана, можно менять */
+      line-height:1;
+      white-space:nowrap;
     }
-    .brandTitle small{ color:var(--muted); font-weight:600; font-size:12px; margin-top:4px; }
 
     .navLinks{
-      display:flex; gap:18px; align-items:center;
+      justify-self:center;
+      display:flex;
+      gap:18px;
+      align-items:center;
       color:var(--muted);
       font-size:14px;
-      flex: 0 0 auto;
     }
     .navLinks a{ padding:8px 10px; border-radius:12px; }
     .navLinks a:hover{ background: rgba(255,255,255,.06); color:var(--text); }
 
     .cta{
+      justify-self:end;
       display:flex;
       gap:10px;
       align-items:center;
-      flex: 1 1 auto;
-      justify-content: flex-end;
-      flex-wrap: wrap;
+      flex-wrap:wrap;
     }
 
     .btn{
@@ -177,7 +157,6 @@
     }
     .btnPrimary:hover{ filter: brightness(1.04); }
 
-    /* ✅ WA кнопка без иконки (по просьбе) */
     .btnWA{
       background: rgba(37, 211, 102, .12);
       border: 1px solid rgba(37, 211, 102, .30);
@@ -185,16 +164,7 @@
     }
     .btnWA:hover{ background: rgba(37, 211, 102, .18); }
 
-    .btnIcon{
-      width:42px; height:42px;
-      padding:0;
-      justify-content:center;
-      border-radius:14px;
-    }
-
-    .icon{ width:18px; height:18px; display:inline-block; }
-
-    /* ===== HERO (новая структура) ===== */
+    /* ===== остальной сайт (без изменений по сути) ===== */
     .hero{ padding:40px 0 18px; }
     .card{
       background: rgba(255,255,255,.06);
@@ -203,14 +173,8 @@
       box-shadow: var(--shadow);
       backdrop-filter: blur(10px);
     }
+    .heroCard{ padding:18px; overflow:hidden; position:relative; }
 
-    .heroCard{
-      padding:18px;
-      overflow:hidden;
-      position:relative;
-    }
-
-    /* ✅ Большая “аватарка” сверху (занимает большую часть экрана) */
     .heroVisual{
       border-radius: 22px;
       border:1px solid rgba(255,255,255,.12);
@@ -222,18 +186,13 @@
       overflow:hidden;
       min-height: clamp(320px, 55vh, 560px);
     }
-
     .heroVisual img{
-      position:absolute;
-      inset:0;
-      width:100%;
-      height:100%;
+      position:absolute; inset:0;
+      width:100%; height:100%;
       object-fit:cover;
       filter: saturate(1.04) contrast(1.02);
       transform: translateZ(0);
     }
-
-    /* лёгкий неоновый градиент поверх картинки */
     .heroVisual::after{
       content:"";
       position:absolute; inset:0;
@@ -243,8 +202,6 @@
         linear-gradient(180deg, rgba(0,0,0,.05) 0%, rgba(0,0,0,.38) 70%, rgba(0,0,0,.62) 100%);
       pointer-events:none;
     }
-
-    /* тонкая рамка “неон” */
     .heroVisual::before{
       content:"";
       position:absolute; inset:-2px;
@@ -259,11 +216,7 @@
       pointer-events:none;
     }
 
-    .heroText{
-      padding:18px 6px 4px;
-      text-align:left;
-    }
-
+    .heroText{ padding:18px 6px 4px; }
     .heroTitle{
       margin: 8px 0 0;
       font-size: clamp(28px, 4vw, 44px);
@@ -271,7 +224,6 @@
       line-height:1.06;
       font-weight:900;
     }
-
     .lead{
       color:var(--muted);
       font-size:16px;
@@ -280,16 +232,13 @@
       max-width: 75ch;
       font-weight: 600;
     }
-
     .heroActions{
-      display:flex;
-      flex-wrap:wrap;
+      display:flex; flex-wrap:wrap;
       gap:10px;
       margin-top:16px;
       align-items:center;
     }
 
-    /* ✅ плашки как на твоей 1-й картинке */
     .mini{
       display:flex; gap:12px; flex-wrap:wrap;
       margin-top:16px;
@@ -305,19 +254,15 @@
       font-weight: 650;
       min-height: 44px;
     }
-    .pill svg{ opacity:.9; }
 
-    /* ===== SECTIONS ===== */
     section{ padding:22px 0; }
     .sectionHead{
       display:flex; align-items:end; justify-content:space-between;
-      gap:14px;
-      margin-bottom:12px;
+      gap:14px; margin-bottom:12px;
     }
     .sectionHead h2{ margin:0; font-size:22px; letter-spacing:.2px; }
     .sectionHead p{ margin:0; color:var(--muted); font-size:14px; font-weight: 600; }
 
-    /* Услуги — шире, эстетично */
     .gridServices{
       display:grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -356,7 +301,6 @@
       font-weight:750;
     }
 
-    /* Portfolio (оставляем как есть, но ровнее) */
     .gallery{
       display:grid;
       grid-template-columns: 1.2fr .8fr;
@@ -411,7 +355,6 @@
       font-weight:700;
     }
 
-    /* ✅ Три колонки: Контакты / Заявка / Отзывы */
     .grid3cols{
       display:grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -443,12 +386,7 @@
     .panel h3{ margin:0 0 8px; font-size:16px; font-weight:850; }
     .sub{ margin:0 0 12px; color:var(--muted); font-size:13px; font-weight:600; line-height:1.5; }
 
-    .socialRow{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
+    .socialRow{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
     .socialLink{
       display:inline-flex;
       align-items:center;
@@ -483,7 +421,9 @@
       box-shadow: 0 0 0 4px rgba(57,160,255,.14);
     }
     .formRow{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+
     .hint{ margin-top:10px; color:var(--muted); font-size:12px; line-height:1.45; font-weight: 600; }
+
     .toast{
       margin-top:10px;
       padding:10px 12px;
@@ -505,9 +445,7 @@
       background: rgba(0,0,0,.16);
       backdrop-filter: blur(10px);
     }
-    .reviewTop{
-      display:flex; justify-content:space-between; gap:12px; align-items:flex-start;
-    }
+    .reviewTop{ display:flex; justify-content:space-between; gap:12px; align-items:flex-start; }
     .stars{ letter-spacing:2px; color: rgba(255,255,255,.85); }
     .review small{ color:var(--muted); font-weight:650; }
     .review p{ margin:8px 0 0; color:rgba(233,236,255,.9); line-height:1.5; font-weight:650; }
@@ -522,9 +460,9 @@
       align-items:center;
     }
 
-    /* ✅ адаптация */
+    /* ✅ адаптация шапки */
     @media (max-width: 920px){
-      .navLinks{ display:none; }
+      .navLinks{ display:none; } /* на мобиле прячем меню как раньше */
       .gridServices{ grid-template-columns: 1fr; }
       .gallery{ grid-template-columns: 1fr; }
       .thumbs{ grid-template-columns: 1fr 1fr; }
@@ -535,9 +473,10 @@
     @media (max-width: 520px){
       #copyPhoneBtn{ display:none; }
       .btn{ padding:10px 12px; }
-      .avatarSmall{ width:40px; height:40px; border-radius:13px; }
-      .brandTitle{ font-size:16px; }
+      .brandText{ font-size:18px; }
       .thumbs{ grid-template-columns: 1fr; }
+      .navBar{ grid-template-columns: 1fr auto; }
+      .navLinks{ display:none; }
     }
   </style>
 </head>
@@ -547,16 +486,11 @@
 
   <header>
     <div class="wrap">
-      <div class="nav">
-        <div class="brand">
-          <!-- Положи avatar.png рядом с index.html -->
-          <img class="avatarSmall" src="avatar.png" alt="АннКарДекор" onerror="this.style.display='none'">
-          <div class="brandTitle">
-            АннКарДекор
-            <small>Гравировка зеркал и фар</small>
-          </div>
-        </div>
+      <div class="navBar">
+        <!-- ✅ только название -->
+        <div class="brandText">АннКарДекор</div>
 
+        <!-- ✅ меню по центру (в линию) -->
         <nav class="navLinks" aria-label="Навигация">
           <a href="#about">Главная</a>
           <a href="#services">Услуги</a>
@@ -564,27 +498,10 @@
           <a href="#contact">Контакты</a>
         </nav>
 
+        <!-- ✅ справа только: скопировать / WhatsApp / оставить -->
         <div class="cta">
-          <a class="btn btnIcon" href="https://t.me/anncardecor" target="_blank" rel="noopener" aria-label="Telegram">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M21.8 4.7c.3-1.2-1-2.2-2.1-1.8L2.9 9.3c-1.6.6-1.5 2.9.2 3.3l4.3 1 1.6 4.9c.5 1.5 2.5 1.8 3.4.6l2.5-3.1 4.6 3.4c1.2.9 2.9.2 3.2-1.3l2.1-13.4Z" stroke="currentColor" stroke-width="1.6" opacity=".95"/>
-              <path d="M7.4 13.6 18.7 6.8c.4-.2.8.2.5.6l-7.9 8.3c-.2.2-.3.5-.3.8l-.2 2.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity=".95"/>
-            </svg>
-          </a>
-
-          <a class="btn btnIcon" href="https://www.instagram.com/anncardecor?igsh=emo0bGUzMWg4Y2tk&utm_source=qr" target="_blank" rel="noopener" aria-label="Instagram">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M7.5 2.8h9A4.7 4.7 0 0 1 21.2 7.5v9A4.7 4.7 0 0 1 16.5 21.2h-9A4.7 4.7 0 0 1 2.8 16.5v-9A4.7 4.7 0 0 1 7.5 2.8Z" stroke="currentColor" stroke-width="1.6" opacity=".95"/>
-              <path d="M12 16.2A4.2 4.2 0 1 0 12 7.8a4.2 4.2 0 0 0 0 8.4Z" stroke="currentColor" stroke-width="1.6" opacity=".95"/>
-              <path d="M17.2 6.9h.01" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
-            </svg>
-          </a>
-
           <button class="btn" id="copyPhoneBtn" type="button">Скопировать номер</button>
-
-          <!-- ✅ без иконки WhatsApp -->
           <a class="btn btnWA" id="waHeaderBtn" href="#" aria-label="Написать в WhatsApp">Написать в WhatsApp</a>
-
           <a class="btn btnPrimary" href="#order">Оставить заявку</a>
         </div>
       </div>
@@ -592,7 +509,6 @@
   </header>
 
   <main class="wrap">
-    <!-- ✅ Главная: сначала большая аватарка, потом текст и плашки -->
     <section class="hero" id="about">
       <div class="card heroCard">
         <div class="heroVisual">
@@ -608,7 +524,6 @@
           </p>
 
           <div class="heroActions">
-            <!-- ✅ без иконки WhatsApp -->
             <a class="btn btnWA" id="waHeroBtn" href="#">Написать в WhatsApp</a>
             <a class="btn" href="#portfolio">Посмотреть работы</a>
           </div>
@@ -638,7 +553,6 @@
       </div>
     </section>
 
-    <!-- ✅ Услуги (шире) -->
     <section id="services">
       <div class="sectionHead">
         <div>
@@ -666,7 +580,6 @@
       </div>
     </section>
 
-    <!-- ✅ Портфолио (оставляем, кнопку “Хочу так же” сохраняем) -->
     <section id="portfolio">
       <div class="sectionHead">
         <div>
@@ -693,7 +606,6 @@
       </div>
     </section>
 
-    <!-- ✅ После портфолио: 3 колонки (Контакты / Заявка / Отзывы) -->
     <section id="contact">
       <div class="sectionHead">
         <div>
@@ -703,15 +615,12 @@
       </div>
 
       <div class="grid3cols">
-        <!-- Контакты -->
         <div class="panel">
           <h3>Контакты</h3>
           <p class="sub">
             Телефон: <b style="color:var(--text); font-weight:800;">+7 (914) 286-28-03</b>
           </p>
 
-          <!-- ✅ убрали строку “Instagram / Telegram: AnnCarDecor”
-               ✅ оставили только кликабельные плашки -->
           <div class="socialRow">
             <a class="socialLink" href="https://t.me/anncardecor" target="_blank" rel="noopener">
               <span class="socialLeft">
@@ -740,16 +649,12 @@
               Скопировать номер
             </button>
 
-            <!-- ✅ без иконки -->
             <a class="btn btnWA" id="waContactsBtn" href="#" style="width:100%; justify-content:center;">
               Написать в WhatsApp
             </a>
           </div>
-
-          <p class="hint">Заявка откроется в WhatsApp с готовым текстом.</p>
         </div>
 
-        <!-- Заявка -->
         <div class="panel" id="order">
           <h3>Заявка на заказ</h3>
           <p class="sub">Заполни — откроем WhatsApp и сообщение уже будет готово.</p>
@@ -780,7 +685,6 @@
             <label>Ссылка на фото (если есть)</label>
             <input name="photo_link" placeholder="Ссылка на фото/референс (Drive, TG и т.д.)" />
 
-            <!-- ✅ без иконки WhatsApp -->
             <button class="btn btnWA" type="submit" style="margin-top:12px; width:100%; justify-content:center;">
               Отправить в WhatsApp
             </button>
@@ -790,7 +694,6 @@
           </form>
         </div>
 
-        <!-- Отзывы -->
         <div class="panel" id="reviews">
           <h3>Отзывы</h3>
           <p class="sub">Первые отзывы можно добавить прямо тут.</p>
@@ -857,7 +760,6 @@
 
     const helloMsg = "Здравствуйте! Хочу оформить заявку в АннКарДекор 👋";
 
-    // WA buttons (без иконок, только текст)
     ["waHeaderBtn","waHeroBtn","waContactsBtn"].forEach(id=>{
       const el = document.getElementById(id);
       if(!el) return;
@@ -869,7 +771,6 @@
       openWhatsApp("Здравствуйте! Хочу такую же гравировку, можно консультацию? 👋");
     });
 
-    // Copy phone (2 кнопки)
     async function copyPhone(){
       try{
         await navigator.clipboard.writeText(PHONE_DISPLAY);
@@ -881,7 +782,6 @@
     document.getElementById("copyPhoneBtn")?.addEventListener("click", copyPhone);
     document.getElementById("copyPhoneBtn2")?.addEventListener("click", copyPhone);
 
-    // Order form → WhatsApp
     const orderForm = document.getElementById("orderForm");
     const orderToast = document.getElementById("orderToast");
 
@@ -912,7 +812,6 @@
       openWhatsApp(message);
     });
 
-    // Reviews (local)
     const KEY = "anncardecor_reviews_v2";
     const reviewsList = document.getElementById("reviewsList");
     const reviewForm = document.getElementById("reviewForm");
