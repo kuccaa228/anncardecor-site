@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="ru">
 <head>
@@ -36,40 +37,60 @@
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
       color:var(--text);
-
-      /* База (делаем более “плавную”): */
-      background:
-        radial-gradient(1400px 700px at 18% 10%, rgba(57,160,255,.24), transparent 58%),
-        radial-gradient(1100px 650px at 85% 18%, rgba(168,85,247,.26), transparent 60%),
-        radial-gradient(1000px 900px at 55% 92%, rgba(255,79,216,.10), transparent 62%),
-        linear-gradient(180deg, var(--bg0) 0%, #080a1a 40%, var(--bg1) 100%);
+      background: #070814;
       overflow-x:hidden;
     }
 
-    /* ✅ Убираем “полосатость” градиента (banding) — добавляем лёгкий noise-оверлей */
+    /* ✅ Слой 1: очень большой плавный фон (размываем чуть-чуть) */
+    body::after{
+      content:"";
+      position:fixed;
+      inset:-20vh -20vw;
+      z-index:-3;
+      pointer-events:none;
+
+      background:
+        radial-gradient(1200px 700px at 12% 20%, rgba(57,160,255,.28), transparent 65%),
+        radial-gradient(1100px 700px at 85% 25%, rgba(168,85,247,.30), transparent 66%),
+        radial-gradient(1200px 900px at 55% 95%, rgba(255,79,216,.12), transparent 70%),
+        radial-gradient(900px 600px at 35% 65%, rgba(57,160,255,.12), transparent 70%),
+        radial-gradient(900px 700px at 70% 70%, rgba(168,85,247,.12), transparent 72%),
+        linear-gradient(180deg, var(--bg0) 0%, #070a1b 45%, var(--bg1) 100%);
+
+      filter: blur(18px);
+      transform: translateZ(0);
+    }
+
+    /* ✅ Слой 2: dithering/noise — убирает полосы (banding) */
     body::before{
       content:"";
       position:fixed;
       inset:0;
       pointer-events:none;
-      z-index:-1;
-      opacity:.08; /* можно 0.05–0.12 */
-      mix-blend-mode: overlay;
+      z-index:-2;
+
+      /* ВАЖНО: noise в SVG (без внешних файлов) */
       background-image:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
-      background-size:240px 240px;
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.85'/%3E%3C/svg%3E");
+      background-size:300px 300px;
+
+      opacity:.12;           /* усилено (было слабее) */
+      mix-blend-mode: soft-light;
+      transform: translateZ(0);
     }
 
+    /* Плавающая аура — чисто для красоты, тоже помогает плавности */
     .aurora{
       position:fixed; inset:-30vh -30vw;
       background:
-        radial-gradient(70vw 42vh at 18% 28%, rgba(57,160,255,.12), transparent 62%),
-        radial-gradient(58vw 48vh at 72% 34%, rgba(168,85,247,.12), transparent 62%),
-        radial-gradient(62vw 55vh at 52% 82%, rgba(255,79,216,.06), transparent 65%);
-      filter: blur(34px);
+        radial-gradient(70vw 42vh at 18% 28%, rgba(57,160,255,.10), transparent 62%),
+        radial-gradient(58vw 48vh at 72% 34%, rgba(168,85,247,.10), transparent 62%),
+        radial-gradient(62vw 55vh at 52% 82%, rgba(255,79,216,.05), transparent 65%);
+      filter: blur(40px);
       animation: float 10s ease-in-out infinite alternate;
       pointer-events:none;
-      z-index:-2;
+      z-index:-1;
+      transform: translateZ(0);
     }
     @keyframes float{
       from{ transform: translate3d(-1%, -1%, 0) scale(1.02); }
@@ -98,7 +119,6 @@
       min-width: 220px;
     }
 
-    /* ✅ Аватар (положи в репозиторий файл avatar.png рядом с index.html) */
     .avatar{
       width:42px; height:42px;
       border-radius:16px;
@@ -135,6 +155,7 @@
       display:inline-flex;
       align-items:center;
       gap:8px;
+      backdrop-filter: blur(8px);
     }
     .btn:hover{ background: rgba(255,255,255,.10); }
 
@@ -169,15 +190,14 @@
       align-items:stretch;
     }
     .card{
-      background: var(--card);
-      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       backdrop-filter: blur(10px);
     }
     .heroMain{ padding:26px 26px 22px; overflow:hidden; position:relative; }
 
-    /* ✅ Заголовок: сначала “АннКарДекор”, ниже — фраза */
     .heroBrand{
       font-weight:900;
       letter-spacing:.2px;
@@ -228,8 +248,8 @@
       border-radius: 18px;
       border:1px solid rgba(255,255,255,.12);
       background:
-        radial-gradient(700px 260px at 20% 10%, rgba(57,160,255,.22), transparent 62%),
-        radial-gradient(520px 260px at 82% 30%, rgba(168,85,247,.24), transparent 62%),
+        radial-gradient(800px 300px at 20% 10%, rgba(57,160,255,.22), transparent 68%),
+        radial-gradient(600px 300px at 82% 30%, rgba(168,85,247,.24), transparent 68%),
         rgba(0,0,0,.14);
       padding:16px;
       position:relative;
@@ -281,13 +301,11 @@
       border:1px solid rgba(255,255,255,.10);
       background: rgba(0,0,0,.14);
       color: rgba(233,236,255,.92);
-      font-weight:700;
+      font-weight:800;
     }
-    .socialLink:hover{
-      background: rgba(255,255,255,.08);
-    }
+    .socialLink:hover{ background: rgba(255,255,255,.08); }
     .socialLink small{
-      font-weight:700;
+      font-weight:800;
       color: rgba(233,236,255,.72);
     }
 
@@ -313,13 +331,14 @@
       min-height: 130px;
       position:relative;
       overflow:hidden;
+      backdrop-filter: blur(10px);
     }
     .svc:after{
       content:"";
       position:absolute; inset:-40%;
-      background: radial-gradient(circle at 20% 20%, rgba(57,160,255,.14), transparent 55%),
-                  radial-gradient(circle at 70% 40%, rgba(168,85,247,.12), transparent 60%);
-      filter: blur(18px);
+      background: radial-gradient(circle at 20% 20%, rgba(57,160,255,.14), transparent 60%),
+                  radial-gradient(circle at 70% 40%, rgba(168,85,247,.12), transparent 62%);
+      filter: blur(22px);
       transform: rotate(10deg);
       pointer-events:none;
     }
@@ -334,7 +353,7 @@
       background: rgba(0,0,0,.14);
       color:var(--muted);
       font-size:12px;
-      font-weight:700;
+      font-weight:800;
     }
 
     .gallery{
@@ -347,12 +366,13 @@
       border-radius:20px;
       border:1px solid rgba(255,255,255,.10);
       background:
-        radial-gradient(950px 340px at 18% 20%, rgba(57,160,255,.18), transparent 62%),
-        radial-gradient(760px 360px at 78% 30%, rgba(168,85,247,.18), transparent 62%),
+        radial-gradient(1200px 420px at 18% 20%, rgba(57,160,255,.18), transparent 70%),
+        radial-gradient(900px 440px at 78% 30%, rgba(168,85,247,.18), transparent 70%),
         rgba(0,0,0,.18);
       position:relative;
       overflow:hidden;
       min-height: 280px;
+      backdrop-filter: blur(10px);
     }
     .shot .overlay{
       position:absolute; inset:0;
@@ -364,17 +384,19 @@
     }
     .caption b{ font-size:16px; }
     .caption small{ color:var(--muted); display:block; margin-top:4px; }
+
     .thumbs{ display:grid; grid-template-columns: 1fr; gap:14px; }
     .thumb{
       min-height: 133px;
       border-radius:20px;
       border:1px solid rgba(255,255,255,.10);
       background:
-        radial-gradient(520px 240px at 30% 30%, rgba(57,160,255,.16), transparent 62%),
-        radial-gradient(520px 240px at 70% 40%, rgba(168,85,247,.14), transparent 62%),
+        radial-gradient(700px 320px at 30% 30%, rgba(57,160,255,.16), transparent 70%),
+        radial-gradient(700px 320px at 70% 40%, rgba(168,85,247,.14), transparent 70%),
         rgba(0,0,0,.18);
       position:relative;
       overflow:hidden;
+      backdrop-filter: blur(10px);
     }
     .thumb:after{
       content:"";
@@ -384,7 +406,7 @@
     .thumb span{
       position:absolute; left:14px; bottom:12px; z-index:1;
       color:var(--muted); font-size:13px;
-      font-weight:700;
+      font-weight:800;
     }
 
     .forms{
@@ -397,9 +419,9 @@
       border-radius:20px;
       border:1px solid rgba(255,255,255,.10);
       background: rgba(255,255,255,.05);
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(10px);
     }
-    label{ display:block; margin:10px 0 6px; color:var(--muted); font-size:13px; font-weight:700; }
+    label{ display:block; margin:10px 0 6px; color:var(--muted); font-size:13px; font-weight:800; }
     input, textarea, select{
       width:100%;
       padding:12px 12px;
@@ -408,7 +430,7 @@
       background: rgba(0,0,0,.20);
       color:var(--text);
       outline:none;
-      font-weight:650;
+      font-weight:700;
     }
     textarea{ min-height:110px; resize:vertical; }
     input:focus, textarea:focus, select:focus{
@@ -425,7 +447,7 @@
       border:1px solid rgba(255,255,255,.12);
       background: rgba(0,0,0,.22);
       color:var(--muted);
-      font-weight:700;
+      font-weight:800;
     }
     .toast.ok{ display:block; border-color: rgba(74,222,128,.35); color: rgba(209,250,229,.95); }
     .toast.bad{ display:block; border-color: rgba(251,113,133,.35); color: rgba(255,228,230,.95); }
@@ -436,13 +458,14 @@
       border-radius:18px;
       border:1px solid rgba(255,255,255,.10);
       background: rgba(0,0,0,.16);
+      backdrop-filter: blur(10px);
     }
     .reviewTop{
       display:flex; justify-content:space-between; gap:12px; align-items:flex-start;
     }
     .stars{ letter-spacing:2px; color: rgba(255,255,255,.85); }
-    .review small{ color:var(--muted); font-weight:700; }
-    .review p{ margin:8px 0 0; color:rgba(233,236,255,.9); line-height:1.5; font-weight:650; }
+    .review small{ color:var(--muted); font-weight:800; }
+    .review p{ margin:8px 0 0; color:rgba(233,236,255,.9); line-height:1.5; font-weight:700; }
 
     footer{ padding:26px 0 40px; color:var(--muted); font-size:13px; }
     .footerGrid{
@@ -473,7 +496,6 @@
     <div class="wrap">
       <div class="nav">
         <div class="brand">
-          <!-- ✅ АВА: добавь в репозиторий картинку "avatar.png" (рядом с index.html) -->
           <img class="avatar" src="avatar.png" alt="АннКарДекор" onerror="this.style.display='none'">
           <div class="brandTitle">
             АннКарДекор
@@ -490,7 +512,6 @@
         </nav>
 
         <div class="cta">
-          <!-- Соц.иконки в шапке -->
           <a class="btn btnIcon" href="https://t.me/anncardecor" target="_blank" rel="noopener" aria-label="Telegram">
             <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M21.8 4.7c.3-1.2-1-2.2-2.1-1.8L2.9 9.3c-1.6.6-1.5 2.9.2 3.3l4.3 1 1.6 4.9c.5 1.5 2.5 1.8 3.4.6l2.5-3.1 4.6 3.4c1.2.9 2.9.2 3.2-1.3l2.1-13.4Z" stroke="currentColor" stroke-width="1.6" opacity=".95"/>
@@ -526,7 +547,6 @@
     <section class="hero" id="about">
       <div class="heroGrid">
         <div class="card heroMain">
-          <!-- ✅ по твоей просьбе: сначала АннКарДекор, потом заголовок -->
           <div class="heroBrand">АннКарДекор</div>
           <h1>Гравировка зеркал и фар, которая выглядит как бренд.</h1>
 
@@ -572,7 +592,6 @@
               Instagram / Telegram: <b style="color:var(--text);">AnnCarDecor</b>
             </div>
 
-            <!-- ✅ Ссылки как ты просила -->
             <div class="socialRow">
               <a class="socialLink" href="https://t.me/anncardecor" target="_blank" rel="noopener">
                 <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -779,9 +798,9 @@
         <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
           <span>Тел.: <b style="color:var(--text);">+7 (914) 286-28-03</b></span>
           <span>•</span>
-          <a href="https://t.me/anncardecor" target="_blank" rel="noopener" style="color:rgba(233,236,255,.92); font-weight:800;">Telegram</a>
+          <a href="https://t.me/anncardecor" target="_blank" rel="noopener" style="color:rgba(233,236,255,.92); font-weight:900;">Telegram</a>
           <span>•</span>
-          <a href="https://www.instagram.com/anncardecor?igsh=emo0bGUzMWg4Y2tk&utm_source=qr" target="_blank" rel="noopener" style="color:rgba(233,236,255,.92); font-weight:800;">Instagram</a>
+          <a href="https://www.instagram.com/anncardecor?igsh=emo0bGUzMWg4Y2tk&utm_source=qr" target="_blank" rel="noopener" style="color:rgba(233,236,255,.92); font-weight:900;">Instagram</a>
         </div>
       </div>
     </footer>
