@@ -1,6 +1,4 @@
-
-
-    <!doctype html>
+<!doctype html>
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
@@ -12,9 +10,6 @@
     :root{
       --bg0:#070814;
       --bg1:#0b0f2a;
-
-      --card: rgba(255,255,255,.06);
-      --stroke: rgba(255,255,255,.12);
 
       --text:#e9ecff;
       --muted: rgba(233,236,255,.72);
@@ -39,7 +34,7 @@
       overflow-x:hidden;
     }
 
-    /* ✅ Слой 1: очень большой плавный фон (размываем чуть-чуть) */
+    /* ✅ Слой 1: очень большой плавный фон */
     body::after{
       content:"";
       position:fixed;
@@ -59,9 +54,7 @@
       transform: translateZ(0);
     }
 
-    /* ✅ Слой 2: noise / dithering (убирает полосы в градиенте)
-       - на ПК делаем слабее (чтобы не было "зерна")
-       - на телефоне чуть сильнее */
+    /* ✅ Слой 2: noise / dithering */
     body::before{
       content:"";
       position:fixed;
@@ -77,14 +70,10 @@
       mix-blend-mode: soft-light;
       transform: translateZ(0);
     }
-    @media (min-width: 900px){
-      body::before{ opacity:.04; }
-    }
-    @media (max-width: 899px){
-      body::before{ opacity:.09; }
-    }
+    @media (min-width: 900px){ body::before{ opacity:.04; } }
+    @media (max-width: 899px){ body::before{ opacity:.09; } }
 
-    /* Плавающая аура — помогает плавности + красиво */
+    /* Плавающая аура */
     .aurora{
       position:fixed; inset:-30vh -30vw;
       background:
@@ -111,15 +100,11 @@
       background: rgba(7,8,20,.58);
       border-bottom: 1px solid rgba(255,255,255,.06);
       z-index:10;
-
-      /* ✅ safe-area для iPhone */
       padding-top: env(safe-area-inset-top);
     }
     .nav{
       display:flex; align-items:center; justify-content:space-between;
       gap:12px;
-
-      /* ✅ учитываем safe-area и делаем перенос */
       padding: calc(12px + env(safe-area-inset-top)) 0 12px;
       flex-wrap: wrap;
     }
@@ -127,13 +112,10 @@
     .brand{
       display:flex; align-items:center; gap:12px;
       letter-spacing:.4px;
-
-      /* ✅ чтобы не ломало шапку */
       flex: 1 1 auto;
       min-width: 180px;
     }
 
-    /* Аватар: положи avatar.png рядом с index.html */
     .avatar{
       width:42px; height:42px;
       border-radius:16px;
@@ -164,8 +146,6 @@
       display:flex;
       gap:10px;
       align-items:center;
-
-      /* ✅ перенос кнопок и выравнивание вправо */
       flex: 1 1 auto;
       justify-content: flex-end;
       flex-wrap: wrap;
@@ -227,7 +207,6 @@
     }
     .heroMain{ padding:26px 26px 22px; overflow:hidden; position:relative; }
 
-    /* ✅ Заголовок: сначала АннКарДекор, ниже — фраза */
     .heroBrand{
       font-weight:900;
       letter-spacing:.2px;
@@ -265,6 +244,7 @@
       border-radius:14px;
       border:1px solid rgba(255,255,255,.10);
       background: rgba(0,0,0,.12);
+      font-weight: 600;
     }
     .pill svg{ opacity:.9; }
 
@@ -331,11 +311,13 @@
       border:1px solid rgba(255,255,255,.10);
       background: rgba(0,0,0,.14);
       color: rgba(233,236,255,.92);
-      font-weight:800;
+
+      /* ✅ шрифт менее толстый */
+      font-weight:600;
     }
     .socialLink:hover{ background: rgba(255,255,255,.08); }
     .socialLink small{
-      font-weight:800;
+      font-weight:600;
       color: rgba(233,236,255,.72);
     }
 
@@ -346,7 +328,7 @@
       margin-bottom:12px;
     }
     .sectionHead h2{ margin:0; font-size:22px; letter-spacing:.2px; }
-    .sectionHead p{ margin:0; color:var(--muted); font-size:14px; }
+    .sectionHead p{ margin:0; color:var(--muted); font-size:14px; font-weight: 500; }
 
     .grid3{
       display:grid;
@@ -373,7 +355,7 @@
       pointer-events:none;
     }
     .svc h3{ margin:0 0 8px; font-size:16px; }
-    .svc p{ margin:0; color:var(--muted); font-size:14px; line-height:1.5; }
+    .svc p{ margin:0; color:var(--muted); font-size:14px; line-height:1.5; font-weight: 500; }
     .svc .tag{
       display:inline-flex;
       margin-top:12px;
@@ -383,7 +365,7 @@
       background: rgba(0,0,0,.14);
       color:var(--muted);
       font-size:12px;
-      font-weight:800;
+      font-weight:700;
     }
 
     .gallery{
@@ -413,7 +395,7 @@
       display:flex; justify-content:space-between; align-items:end; gap:14px;
     }
     .caption b{ font-size:16px; }
-    .caption small{ color:var(--muted); display:block; margin-top:4px; }
+    .caption small{ color:var(--muted); display:block; margin-top:4px; font-weight: 500; }
 
     .thumbs{ display:grid; grid-template-columns: 1fr; gap:14px; }
     .thumb{
@@ -435,8 +417,11 @@
     }
     .thumb span{
       position:absolute; left:14px; bottom:12px; z-index:1;
-      color:var(--muted); font-size:13px;
-      font-weight:800;
+      color:var(--muted);
+      font-size:13px;
+
+      /* ✅ менее толстый шрифт, цвет тот же */
+      font-weight:600;
     }
 
     .forms{
@@ -451,7 +436,7 @@
       background: rgba(255,255,255,.05);
       backdrop-filter: blur(10px);
     }
-    label{ display:block; margin:10px 0 6px; color:var(--muted); font-size:13px; font-weight:800; }
+    label{ display:block; margin:10px 0 6px; color:var(--muted); font-size:13px; font-weight:700; }
     input, textarea, select{
       width:100%;
       padding:12px 12px;
@@ -460,7 +445,7 @@
       background: rgba(0,0,0,.20);
       color:var(--text);
       outline:none;
-      font-weight:700;
+      font-weight:600;
     }
     textarea{ min-height:110px; resize:vertical; }
     input:focus, textarea:focus, select:focus{
@@ -468,7 +453,7 @@
       box-shadow: 0 0 0 4px rgba(57,160,255,.14);
     }
     .formRow{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
-    .hint{ margin-top:10px; color:var(--muted); font-size:12px; line-height:1.4; }
+    .hint{ margin-top:10px; color:var(--muted); font-size:12px; line-height:1.4; font-weight: 500; }
     .toast{
       margin-top:10px;
       padding:10px 12px;
@@ -477,7 +462,7 @@
       border:1px solid rgba(255,255,255,.12);
       background: rgba(0,0,0,.22);
       color:var(--muted);
-      font-weight:800;
+      font-weight:700;
     }
     .toast.ok{ display:block; border-color: rgba(74,222,128,.35); color: rgba(209,250,229,.95); }
     .toast.bad{ display:block; border-color: rgba(251,113,133,.35); color: rgba(255,228,230,.95); }
@@ -494,8 +479,8 @@
       display:flex; justify-content:space-between; gap:12px; align-items:flex-start;
     }
     .stars{ letter-spacing:2px; color: rgba(255,255,255,.85); }
-    .review small{ color:var(--muted); font-weight:800; }
-    .review p{ margin:8px 0 0; color:rgba(233,236,255,.9); line-height:1.5; font-weight:700; }
+    .review small{ color:var(--muted); font-weight:600; }
+    .review p{ margin:8px 0 0; color:rgba(233,236,255,.9); line-height:1.5; font-weight:600; }
 
     footer{ padding:26px 0 40px; color:var(--muted); font-size:13px; }
     .footerGrid{
@@ -514,17 +499,12 @@
       .thumbs{ grid-template-columns: 1fr 1fr; }
       .grid3{ grid-template-columns: 1fr; }
       .forms{ grid-template-columns: 1fr; }
-
-      /* меню скрываем чтобы не давило шапку */
       .navLinks{ display:none; }
     }
 
     @media (max-width: 520px){
-      /* на маленьких экранах убираем кнопку копирования,
-         чтобы шапка не ломалась */
       #copyPhoneBtn{ display:none; }
-
-      .btn{ padding:10px 12px; }
+      .btn{ padding:10px 12px; font-weight: 700; }
     }
   </style>
 </head>
@@ -536,6 +516,7 @@
     <div class="wrap">
       <div class="nav">
         <div class="brand">
+          <!-- Положи avatar.png рядом с index.html -->
           <img class="avatar" src="avatar.png" alt="АннКарДекор" onerror="this.style.display='none'">
           <div class="brandTitle">
             АннКарДекор
@@ -627,9 +608,9 @@
           <div class="neonFrame">
             <b style="font-size:16px;">Контакты</b>
 
-            <div style="margin-top:10px; color: var(--muted); line-height:1.55;">
-              Телефон: <b style="color:var(--text);">+7 (914) 286-28-03</b><br/>
-              Instagram / Telegram: <b style="color:var(--text);">AnnCarDecor</b>
+            <div style="margin-top:10px; color: var(--muted); line-height:1.55; font-weight:500;">
+              Телефон: <b style="color:var(--text); font-weight:700;">+7 (914) 286-28-03</b><br/>
+              Instagram / Telegram: <b style="color:var(--text); font-weight:700;">AnnCarDecor</b>
             </div>
 
             <div class="socialRow">
@@ -665,7 +646,7 @@
 
           <div class="neonFrame" style="min-height:140px;">
             <b style="font-size:16px;">Быстрая заявка</b>
-            <div style="margin-top:10px; color:var(--muted);">
+            <div style="margin-top:10px; color:var(--muted); font-weight:500;">
               Нажми — и откроется WhatsApp с готовым сообщением.
             </div>
             <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
@@ -712,6 +693,7 @@
       <div class="sectionHead">
         <div>
           <h2>Портфолио</h2>
+          <!-- ✅ убрали подпись под заголовком -->
         </div>
       </div>
 
@@ -720,18 +702,20 @@
           <div class="overlay"></div>
           <div class="caption">
             <div>
-              <b>Лучшие работы</b>
-              <small>Замени фон на реальные фото — будет топ.</small>
+              <b style="font-weight:700;">Лучшие работы</b>
+              <small style="font-weight:500;">Скоро добавим реальные фото работ.</small>
             </div>
             <a class="btn btnWA" id="waPortfolioBtn" href="#">Хочу так же</a>
           </div>
         </div>
 
         <div class="thumbs">
-          <div class="thumb"><span>Зеркало — логотип</span></div>
-          <div class="thumb"><span>Фары — подпись</span></div>
+          <!-- ✅ изменили подписи и сделали шрифт менее толстым -->
+          <div class="thumb"><span>Зеркала</span></div>
+          <div class="thumb"><span>Фары</span></div>
         </div>
       </div>
+      <!-- ✅ убрали подсказку под портфолио -->
     </section>
 
     <section id="order">
@@ -744,8 +728,8 @@
 
       <div class="forms">
         <form id="orderForm">
-          <h3 style="margin:0 0 6px;">Оставить заявку</h3>
-          <p style="margin:0; color:var(--muted); font-size:13px;">После отправки откроется WhatsApp.</p>
+          <h3 style="margin:0 0 6px; font-weight:700;">Оставить заявку</h3>
+          <p style="margin:0; color:var(--muted); font-size:13px; font-weight:500;">После отправки откроется WhatsApp.</p>
 
           <div class="formRow">
             <div>
@@ -785,8 +769,8 @@
         </form>
 
         <form id="reviewForm">
-          <h3 style="margin:0 0 6px;">Оставить отзыв</h3>
-          <p style="margin:0; color:var(--muted); font-size:13px;">Отзывы сохраняются на этом устройстве (для старта).</p>
+          <h3 style="margin:0 0 6px; font-weight:700;">Оставить отзыв</h3>
+          <p style="margin:0; color:var(--muted); font-size:13px; font-weight:500;">Отзывы сохраняются на этом устройстве (для старта).</p>
 
           <div class="formRow">
             <div>
@@ -812,7 +796,7 @@
           <button class="btn btnPrimary" type="submit" style="margin-top:12px;">Добавить отзыв</button>
           <div id="reviewToast" class="toast"></div>
 
-          <div class="hint">Позже можно подключить общие отзывы для всех клиентов (Firebase/Sheets).</div>
+          <div class="hint">Позже можно подключить общие отзывы для всех клиентов.</div>
         </form>
       </div>
     </section>
@@ -833,12 +817,12 @@
       <div class="footerGrid">
         <div>© <span id="year"></span> АннКарДекор</div>
 
-        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-          <span>Тел.: <b style="color:var(--text);">+7 (914) 286-28-03</b></span>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; font-weight:500;">
+          <span>Тел.: <b style="color:var(--text); font-weight:700;">+7 (914) 286-28-03</b></span>
           <span>•</span>
-          <a href="https://t.me/anncardecor" target="_blank" rel="noopener" style="color:rgba(233,236,255,.92); font-weight:900;">Telegram</a>
+          <a href="https://t.me/anncardecor" target="_blank" rel="noopener" style="color:rgba(233,236,255,.92); font-weight:700;">Telegram</a>
           <span>•</span>
-          <a href="https://www.instagram.com/anncardecor?igsh=emo0bGUzMWg4Y2tk&utm_source=qr" target="_blank" rel="noopener" style="color:rgba(233,236,255,.92); font-weight:900;">Instagram</a>
+          <a href="https://www.instagram.com/anncardecor?igsh=emo0bGUzMWg4Y2tk&utm_source=qr" target="_blank" rel="noopener" style="color:rgba(233,236,255,.92); font-weight:700;">Instagram</a>
         </div>
       </div>
     </footer>
@@ -948,7 +932,7 @@
         reviewsList.innerHTML = `
           <div class="review">
             <div class="reviewTop">
-              <div><b>Пока нет отзывов</b><br/><small>Будь первым — оставь отзыв выше.</small></div>
+              <div><b style="font-weight:700;">Пока нет отзывов</b><br/><small>Будь первым — оставь отзыв выше.</small></div>
               <div class="stars">☆☆☆☆☆</div>
             </div>
           </div>
@@ -962,7 +946,7 @@
           <div class="review">
             <div class="reviewTop">
               <div>
-                <b>${escapeHtml(r.name)}</b><br/>
+                <b style="font-weight:700;">${escapeHtml(r.name)}</b><br/>
                 <small>${new Date(r.ts).toLocaleString("ru-RU")}</small>
               </div>
               <div class="stars">${"★".repeat(r.stars)}${"☆".repeat(5 - r.stars)}</div>
@@ -1001,8 +985,12 @@
       }
     });
 
+    document.getElementById("waHeaderBtn").addEventListener("click", (e) => {
+      e.preventDefault();
+      openWhatsApp(helloMsg);
+    });
+
     renderReviews();
   </script>
 </body>
 </html>
-
