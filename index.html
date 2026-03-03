@@ -1,0 +1,999 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>АннКарДекор — гравировка зеркал и фар</title>
+  <meta name="description" content="АннКарДекор — гравировка зеркал и фар. Заявка в WhatsApp, портфолио и отзывы." />
+
+  <style>
+    :root{
+      --bg0:#070814;
+      --bg1:#0b0f2a;
+
+      --text:#e9ecff;
+      --muted: rgba(233,236,255,.72);
+
+      --shadow: 0 20px 80px rgba(0,0,0,.55);
+      --radius: 22px;
+
+      --wa: #25D366;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+      color:var(--text);
+      background: #070814;
+      overflow-x:hidden;
+    }
+
+    /* ✅ Слой 1: большой плавный фон */
+    body::after{
+      content:"";
+      position:fixed;
+      inset:-20vh -20vw;
+      z-index:-3;
+      pointer-events:none;
+
+      background:
+        radial-gradient(1200px 700px at 12% 20%, rgba(57,160,255,.28), transparent 65%),
+        radial-gradient(1100px 700px at 85% 25%, rgba(168,85,247,.30), transparent 66%),
+        radial-gradient(1200px 900px at 55% 95%, rgba(255,79,216,.12), transparent 70%),
+        radial-gradient(900px 600px at 35% 65%, rgba(57,160,255,.12), transparent 70%),
+        radial-gradient(900px 700px at 70% 70%, rgba(168,85,247,.12), transparent 72%),
+        linear-gradient(180deg, var(--bg0) 0%, #070a1b 45%, var(--bg1) 100%);
+
+      filter: blur(18px);
+      transform: translateZ(0);
+    }
+
+    /* ✅ Слой 2: noise / dithering (убирает “полосатость” градиента) */
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:-2;
+
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='900'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='900' height='900' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+      background-size:900px 900px;
+
+      opacity:.08;
+      mix-blend-mode: soft-light;
+      transform: translateZ(0);
+    }
+    @media (min-width: 900px){ body::before{ opacity:.04; } }
+    @media (max-width: 899px){ body::before{ opacity:.09; } }
+
+    .aurora{
+      position:fixed; inset:-30vh -30vw;
+      background:
+        radial-gradient(70vw 42vh at 18% 28%, rgba(57,160,255,.10), transparent 62%),
+        radial-gradient(58vw 48vh at 72% 34%, rgba(168,85,247,.10), transparent 62%),
+        radial-gradient(62vw 55vh at 52% 82%, rgba(255,79,216,.05), transparent 65%);
+      filter: blur(40px);
+      animation: float 10s ease-in-out infinite alternate;
+      pointer-events:none;
+      z-index:-1;
+      transform: translateZ(0);
+    }
+    @keyframes float{
+      from{ transform: translate3d(-1%, -1%, 0) scale(1.02); }
+      to{ transform: translate3d(1.2%, 1.4%, 0) scale(1.04); }
+    }
+
+    a{ color:inherit; text-decoration:none; }
+    .wrap{ width:min(1100px, 92vw); margin:0 auto; }
+
+    header{
+      position:sticky; top:0;
+      backdrop-filter: blur(10px);
+      background: rgba(7,8,20,.58);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      z-index:10;
+      padding-top: env(safe-area-inset-top);
+    }
+    .nav{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px;
+      padding: calc(12px + env(safe-area-inset-top)) 0 12px;
+      flex-wrap: wrap;
+    }
+
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      letter-spacing:.4px;
+      flex: 1 1 auto;
+      min-width: 200px;
+    }
+
+    .avatarSmall{
+      width:44px;
+      height:44px;
+      border-radius:14px;
+      object-fit:cover;
+      border:1px solid rgba(255,255,255,.18);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.10),
+        0 14px 35px rgba(57,160,255,.18);
+      background: linear-gradient(135deg, rgba(57,160,255,.35), rgba(168,85,247,.35));
+      flex: 0 0 auto;
+    }
+
+    .brandTitle{
+      font-weight:900;
+      font-size:18px;
+      letter-spacing:.5px;
+      display:flex;
+      flex-direction:column;
+      line-height:1.05;
+      min-width: 0;
+    }
+    .brandTitle small{ color:var(--muted); font-weight:600; font-size:12px; margin-top:4px; }
+
+    .navLinks{
+      display:flex; gap:18px; align-items:center;
+      color:var(--muted);
+      font-size:14px;
+      flex: 0 0 auto;
+    }
+    .navLinks a{ padding:8px 10px; border-radius:12px; }
+    .navLinks a:hover{ background: rgba(255,255,255,.06); color:var(--text); }
+
+    .cta{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex: 1 1 auto;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .btn{
+      border:none; cursor:pointer;
+      padding:10px 14px;
+      border-radius:14px;
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow: 0 10px 25px rgba(0,0,0,.25);
+      font-weight:700;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      backdrop-filter: blur(8px);
+      white-space: nowrap;
+    }
+    .btn:hover{ background: rgba(255,255,255,.10); }
+
+    .btnPrimary{
+      background: linear-gradient(135deg, rgba(57,160,255,.95), rgba(168,85,247,.95));
+      border:1px solid rgba(255,255,255,.16);
+      box-shadow: 0 18px 45px rgba(57,160,255,.18);
+    }
+    .btnPrimary:hover{ filter: brightness(1.04); }
+
+    /* ✅ WA кнопка без иконки (по просьбе) */
+    .btnWA{
+      background: rgba(37, 211, 102, .12);
+      border: 1px solid rgba(37, 211, 102, .30);
+      box-shadow: 0 18px 45px rgba(37, 211, 102, .12);
+    }
+    .btnWA:hover{ background: rgba(37, 211, 102, .18); }
+
+    .btnIcon{
+      width:42px; height:42px;
+      padding:0;
+      justify-content:center;
+      border-radius:14px;
+    }
+
+    .icon{ width:18px; height:18px; display:inline-block; }
+
+    /* ===== HERO (новая структура) ===== */
+    .hero{ padding:40px 0 18px; }
+    .card{
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .heroCard{
+      padding:18px;
+      overflow:hidden;
+      position:relative;
+    }
+
+    /* ✅ Большая “аватарка” сверху (занимает большую часть экрана) */
+    .heroVisual{
+      border-radius: 22px;
+      border:1px solid rgba(255,255,255,.12);
+      background:
+        radial-gradient(900px 380px at 18% 20%, rgba(57,160,255,.16), transparent 70%),
+        radial-gradient(900px 420px at 82% 32%, rgba(168,85,247,.16), transparent 70%),
+        rgba(0,0,0,.18);
+      position:relative;
+      overflow:hidden;
+      min-height: clamp(320px, 55vh, 560px);
+    }
+
+    .heroVisual img{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      filter: saturate(1.04) contrast(1.02);
+      transform: translateZ(0);
+    }
+
+    /* лёгкий неоновый градиент поверх картинки */
+    .heroVisual::after{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(900px 360px at 15% 30%, rgba(57,160,255,.22), transparent 62%),
+        radial-gradient(900px 420px at 82% 34%, rgba(168,85,247,.22), transparent 62%),
+        linear-gradient(180deg, rgba(0,0,0,.05) 0%, rgba(0,0,0,.38) 70%, rgba(0,0,0,.62) 100%);
+      pointer-events:none;
+    }
+
+    /* тонкая рамка “неон” */
+    .heroVisual::before{
+      content:"";
+      position:absolute; inset:-2px;
+      border-radius: 22px;
+      padding:2px;
+      background: linear-gradient(135deg, rgba(57,160,255,.55), rgba(168,85,247,.55), rgba(255,79,216,.18));
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+              mask-composite: exclude;
+      pointer-events:none;
+    }
+
+    .heroText{
+      padding:18px 6px 4px;
+      text-align:left;
+    }
+
+    .heroTitle{
+      margin: 8px 0 0;
+      font-size: clamp(28px, 4vw, 44px);
+      letter-spacing:.2px;
+      line-height:1.06;
+      font-weight:900;
+    }
+
+    .lead{
+      color:var(--muted);
+      font-size:16px;
+      line-height:1.6;
+      margin:12px 0 0;
+      max-width: 75ch;
+      font-weight: 600;
+    }
+
+    .heroActions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:16px;
+      align-items:center;
+    }
+
+    /* ✅ плашки как на твоей 1-й картинке */
+    .mini{
+      display:flex; gap:12px; flex-wrap:wrap;
+      margin-top:16px;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .pill{
+      display:flex; gap:8px; align-items:center;
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.12);
+      font-weight: 650;
+      min-height: 44px;
+    }
+    .pill svg{ opacity:.9; }
+
+    /* ===== SECTIONS ===== */
+    section{ padding:22px 0; }
+    .sectionHead{
+      display:flex; align-items:end; justify-content:space-between;
+      gap:14px;
+      margin-bottom:12px;
+    }
+    .sectionHead h2{ margin:0; font-size:22px; letter-spacing:.2px; }
+    .sectionHead p{ margin:0; color:var(--muted); font-size:14px; font-weight: 600; }
+
+    /* Услуги — шире, эстетично */
+    .gridServices{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap:14px;
+    }
+    .svc{
+      padding:18px;
+      border-radius:20px;
+      background: rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.10);
+      min-height: 150px;
+      position:relative;
+      overflow:hidden;
+      backdrop-filter: blur(10px);
+    }
+    .svc:after{
+      content:"";
+      position:absolute; inset:-40%;
+      background: radial-gradient(circle at 20% 20%, rgba(57,160,255,.14), transparent 60%),
+                  radial-gradient(circle at 70% 40%, rgba(168,85,247,.12), transparent 62%);
+      filter: blur(22px);
+      transform: rotate(10deg);
+      pointer-events:none;
+    }
+    .svc h3{ margin:0 0 8px; font-size:16px; font-weight:800; }
+    .svc p{ margin:0; color:var(--muted); font-size:14px; line-height:1.55; font-weight: 600; }
+    .svc .tag{
+      display:inline-flex;
+      margin-top:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.14);
+      color:var(--muted);
+      font-size:12px;
+      font-weight:750;
+    }
+
+    /* Portfolio (оставляем как есть, но ровнее) */
+    .gallery{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:14px;
+      align-items:stretch;
+    }
+    .shot{
+      border-radius:20px;
+      border:1px solid rgba(255,255,255,.10);
+      background:
+        radial-gradient(1200px 420px at 18% 20%, rgba(57,160,255,.18), transparent 70%),
+        radial-gradient(900px 440px at 78% 30%, rgba(168,85,247,.18), transparent 70%),
+        rgba(0,0,0,.18);
+      position:relative;
+      overflow:hidden;
+      min-height: 300px;
+      backdrop-filter: blur(10px);
+    }
+    .shot .overlay{
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,.55));
+    }
+    .shot .caption{
+      position:absolute; left:18px; right:18px; bottom:16px;
+      display:flex; justify-content:space-between; align-items:end; gap:14px;
+    }
+    .caption b{ font-size:16px; font-weight:800; }
+    .caption small{ color:var(--muted); display:block; margin-top:4px; font-weight: 600; }
+
+    .thumbs{ display:grid; grid-template-columns: 1fr; gap:14px; }
+    .thumb{
+      min-height: 140px;
+      border-radius:20px;
+      border:1px solid rgba(255,255,255,.10);
+      background:
+        radial-gradient(700px 320px at 30% 30%, rgba(57,160,255,.16), transparent 70%),
+        radial-gradient(700px 320px at 70% 40%, rgba(168,85,247,.14), transparent 70%),
+        rgba(0,0,0,.18);
+      position:relative;
+      overflow:hidden;
+      backdrop-filter: blur(10px);
+    }
+    .thumb:after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,.55));
+    }
+    .thumb span{
+      position:absolute; left:14px; bottom:12px; z-index:1;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:700;
+    }
+
+    /* ✅ Три колонки: Контакты / Заявка / Отзывы */
+    .grid3cols{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap:14px;
+      align-items:start;
+    }
+
+    .panel{
+      padding:16px;
+      border-radius:20px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      backdrop-filter: blur(10px);
+      overflow:hidden;
+      position:relative;
+    }
+    .panel:after{
+      content:"";
+      position:absolute; inset:-35%;
+      background:
+        radial-gradient(circle at 20% 25%, rgba(57,160,255,.12), transparent 60%),
+        radial-gradient(circle at 75% 35%, rgba(168,85,247,.12), transparent 62%);
+      filter: blur(24px);
+      pointer-events:none;
+      transform: rotate(8deg);
+    }
+    .panel > *{ position:relative; z-index:1; }
+
+    .panel h3{ margin:0 0 8px; font-size:16px; font-weight:850; }
+    .sub{ margin:0 0 12px; color:var(--muted); font-size:13px; font-weight:600; line-height:1.5; }
+
+    .socialRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .socialLink{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:12px 12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.14);
+      color: rgba(233,236,255,.92);
+      font-weight:750;
+      width:100%;
+      justify-content:space-between;
+    }
+    .socialLink:hover{ background: rgba(255,255,255,.08); }
+    .socialLeft{ display:flex; align-items:center; gap:10px; }
+    .socialLink small{ color:rgba(233,236,255,.70); font-weight:650; }
+
+    label{ display:block; margin:10px 0 6px; color:var(--muted); font-size:13px; font-weight:750; }
+    input, textarea, select{
+      width:100%;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.20);
+      color:var(--text);
+      outline:none;
+      font-weight:650;
+    }
+    textarea{ min-height:110px; resize:vertical; }
+    input:focus, textarea:focus, select:focus{
+      border-color: rgba(57,160,255,.55);
+      box-shadow: 0 0 0 4px rgba(57,160,255,.14);
+    }
+    .formRow{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+    .hint{ margin-top:10px; color:var(--muted); font-size:12px; line-height:1.45; font-weight: 600; }
+    .toast{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:14px;
+      display:none;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      color:var(--muted);
+      font-weight:750;
+    }
+    .toast.ok{ display:block; border-color: rgba(74,222,128,.35); color: rgba(209,250,229,.95); }
+    .toast.bad{ display:block; border-color: rgba(251,113,133,.35); color: rgba(255,228,230,.95); }
+
+    .reviewsList{ margin-top:12px; display:grid; gap:10px; }
+    .review{
+      padding:12px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.16);
+      backdrop-filter: blur(10px);
+    }
+    .reviewTop{
+      display:flex; justify-content:space-between; gap:12px; align-items:flex-start;
+    }
+    .stars{ letter-spacing:2px; color: rgba(255,255,255,.85); }
+    .review small{ color:var(--muted); font-weight:650; }
+    .review p{ margin:8px 0 0; color:rgba(233,236,255,.9); line-height:1.5; font-weight:650; }
+
+    footer{ padding:26px 0 40px; color:var(--muted); font-size:13px; }
+    .footerGrid{
+      display:flex; flex-wrap:wrap;
+      justify-content:space-between;
+      gap:12px;
+      border-top: 1px solid rgba(255,255,255,.06);
+      padding-top:16px;
+      align-items:center;
+    }
+
+    /* ✅ адаптация */
+    @media (max-width: 920px){
+      .navLinks{ display:none; }
+      .gridServices{ grid-template-columns: 1fr; }
+      .gallery{ grid-template-columns: 1fr; }
+      .thumbs{ grid-template-columns: 1fr 1fr; }
+      .grid3cols{ grid-template-columns: 1fr; }
+      .formRow{ grid-template-columns: 1fr; }
+      .heroVisual{ min-height: clamp(300px, 52vh, 520px); }
+    }
+    @media (max-width: 520px){
+      #copyPhoneBtn{ display:none; }
+      .btn{ padding:10px 12px; }
+      .avatarSmall{ width:40px; height:40px; border-radius:13px; }
+      .brandTitle{ font-size:16px; }
+      .thumbs{ grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="aurora" aria-hidden="true"></div>
+
+  <header>
+    <div class="wrap">
+      <div class="nav">
+        <div class="brand">
+          <!-- Положи avatar.png рядом с index.html -->
+          <img class="avatarSmall" src="avatar.png" alt="АннКарДекор" onerror="this.style.display='none'">
+          <div class="brandTitle">
+            АннКарДекор
+            <small>Гравировка зеркал и фар</small>
+          </div>
+        </div>
+
+        <nav class="navLinks" aria-label="Навигация">
+          <a href="#about">Главная</a>
+          <a href="#services">Услуги</a>
+          <a href="#portfolio">Портфолио</a>
+          <a href="#contact">Контакты</a>
+        </nav>
+
+        <div class="cta">
+          <a class="btn btnIcon" href="https://t.me/anncardecor" target="_blank" rel="noopener" aria-label="Telegram">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M21.8 4.7c.3-1.2-1-2.2-2.1-1.8L2.9 9.3c-1.6.6-1.5 2.9.2 3.3l4.3 1 1.6 4.9c.5 1.5 2.5 1.8 3.4.6l2.5-3.1 4.6 3.4c1.2.9 2.9.2 3.2-1.3l2.1-13.4Z" stroke="currentColor" stroke-width="1.6" opacity=".95"/>
+              <path d="M7.4 13.6 18.7 6.8c.4-.2.8.2.5.6l-7.9 8.3c-.2.2-.3.5-.3.8l-.2 2.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity=".95"/>
+            </svg>
+          </a>
+
+          <a class="btn btnIcon" href="https://www.instagram.com/anncardecor?igsh=emo0bGUzMWg4Y2tk&utm_source=qr" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M7.5 2.8h9A4.7 4.7 0 0 1 21.2 7.5v9A4.7 4.7 0 0 1 16.5 21.2h-9A4.7 4.7 0 0 1 2.8 16.5v-9A4.7 4.7 0 0 1 7.5 2.8Z" stroke="currentColor" stroke-width="1.6" opacity=".95"/>
+              <path d="M12 16.2A4.2 4.2 0 1 0 12 7.8a4.2 4.2 0 0 0 0 8.4Z" stroke="currentColor" stroke-width="1.6" opacity=".95"/>
+              <path d="M17.2 6.9h.01" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+            </svg>
+          </a>
+
+          <button class="btn" id="copyPhoneBtn" type="button">Скопировать номер</button>
+
+          <!-- ✅ без иконки WhatsApp -->
+          <a class="btn btnWA" id="waHeaderBtn" href="#" aria-label="Написать в WhatsApp">Написать в WhatsApp</a>
+
+          <a class="btn btnPrimary" href="#order">Оставить заявку</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- ✅ Главная: сначала большая аватарка, потом текст и плашки -->
+    <section class="hero" id="about">
+      <div class="card heroCard">
+        <div class="heroVisual">
+          <img src="avatar.png" alt="АннКарДекор" onerror="this.style.display='none'">
+        </div>
+
+        <div class="heroText">
+          <h1 class="heroTitle">Гравировка зеркал и фар, которая выглядит как бренд.</h1>
+
+          <p class="lead">
+            Студия <b>АннКарДекор</b> делает аккуратную гравировку на зеркалах и оптике: имена, логотипы, надписи,
+            элементы дизайна. Оставь заявку — откроем WhatsApp и подготовим сообщение.
+          </p>
+
+          <div class="heroActions">
+            <!-- ✅ без иконки WhatsApp -->
+            <a class="btn btnWA" id="waHeroBtn" href="#">Написать в WhatsApp</a>
+            <a class="btn" href="#portfolio">Посмотреть работы</a>
+          </div>
+
+          <div class="mini">
+            <div class="pill">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M12 22s8-4 8-10V6l-8-4-8 4v6c0 6 8 10 8 10Z" stroke="currentColor" stroke-width="1.6"/>
+              </svg>
+              Безопасно для поверхности
+            </div>
+            <div class="pill">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M20 7 10 17l-5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Чистые линии и контуры
+            </div>
+            <div class="pill">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M12 6v6l4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" stroke="currentColor" stroke-width="1.6"/>
+              </svg>
+              Быстрые сроки
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ✅ Услуги (шире) -->
+    <section id="services">
+      <div class="sectionHead">
+        <div>
+          <h2>Услуги</h2>
+          <p>Коротко и по делу — что делаем в студии.</p>
+        </div>
+      </div>
+
+      <div class="gridServices">
+        <div class="svc">
+          <h3>Гравировка зеркал</h3>
+          <p>Надпись или логотип на зеркале заднего вида. Акцентно и стильно.</p>
+          <span class="tag">Точное позиционирование</span>
+        </div>
+        <div class="svc">
+          <h3>Гравировка фар</h3>
+          <p>Эмблемы, элементы рисунка, подписи. Можно под концепт авто.</p>
+          <span class="tag">Чистые контуры</span>
+        </div>
+        <div class="svc">
+          <h3>Консультация</h3>
+          <p>Подскажем по идее, месту нанесения, срокам и стоимости. Всё обсудим в WhatsApp.</p>
+          <span class="tag">Быстро и понятно</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ✅ Портфолио (оставляем, кнопку “Хочу так же” сохраняем) -->
+    <section id="portfolio">
+      <div class="sectionHead">
+        <div>
+          <h2>Портфолио</h2>
+        </div>
+      </div>
+
+      <div class="gallery">
+        <div class="shot">
+          <div class="overlay"></div>
+          <div class="caption">
+            <div>
+              <b>Лучшие работы</b>
+              <small>Скоро добавим реальные фото работ.</small>
+            </div>
+            <a class="btn btnWA" id="waPortfolioBtn" href="#">Хочу так же</a>
+          </div>
+        </div>
+
+        <div class="thumbs">
+          <div class="thumb"><span>Зеркала</span></div>
+          <div class="thumb"><span>Фары</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ✅ После портфолио: 3 колонки (Контакты / Заявка / Отзывы) -->
+    <section id="contact">
+      <div class="sectionHead">
+        <div>
+          <h2>Связь и заявки</h2>
+          <p>Контакты, форма заявки и отзывы — аккуратно в одном месте.</p>
+        </div>
+      </div>
+
+      <div class="grid3cols">
+        <!-- Контакты -->
+        <div class="panel">
+          <h3>Контакты</h3>
+          <p class="sub">
+            Телефон: <b style="color:var(--text); font-weight:800;">+7 (914) 286-28-03</b>
+          </p>
+
+          <!-- ✅ убрали строку “Instagram / Telegram: AnnCarDecor”
+               ✅ оставили только кликабельные плашки -->
+          <div class="socialRow">
+            <a class="socialLink" href="https://t.me/anncardecor" target="_blank" rel="noopener">
+              <span class="socialLeft">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M21.8 4.7c.3-1.2-1-2.2-2.1-1.8L2.9 9.3c-1.6.6-1.5 2.9.2 3.3l4.3 1 1.6 4.9c.5 1.5 2.5 1.8 3.4.6l2.5-3.1 4.6 3.4c1.2.9 2.9.2 3.2-1.3l2.1-13.4Z" stroke="currentColor" stroke-width="1.6" opacity=".95"/>
+                  <path d="M7.4 13.6 18.7 6.8c.4-.2.8.2.5.6l-7.9 8.3c-.2.2-.3.5-.3.8l-.2 2.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity=".95"/>
+                </svg>
+                Telegram
+              </span>
+              <small>@anncardecor</small>
+            </a>
+
+            <a class="socialLink" href="https://www.instagram.com/anncardecor?igsh=emo0bGUzMWg4Y2tk&utm_source=qr" target="_blank" rel="noopener">
+              <span class="socialLeft">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M7.5 2.8h9A4.7 4.7 0 0 1 21.2 7.5v9A4.7 4.7 0 0 1 16.5 21.2h-9A4.7 4.7 0 0 1 2.8 16.5v-9A4.7 4.7 0 0 1 7.5 2.8Z" stroke="currentColor" stroke-width="1.6" opacity=".95"/>
+                  <path d="M12 16.2A4.2 4.2 0 1 0 12 7.8a4.2 4.2 0 0 0 0 8.4Z" stroke="currentColor" stroke-width="1.6" opacity=".95"/>
+                  <path d="M17.2 6.9h.01" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+                </svg>
+                Instagram
+              </span>
+              <small>@anncardecor</small>
+            </a>
+
+            <button class="btn" id="copyPhoneBtn2" type="button" style="width:100%; justify-content:center;">
+              Скопировать номер
+            </button>
+
+            <!-- ✅ без иконки -->
+            <a class="btn btnWA" id="waContactsBtn" href="#" style="width:100%; justify-content:center;">
+              Написать в WhatsApp
+            </a>
+          </div>
+
+          <p class="hint">Заявка откроется в WhatsApp с готовым текстом.</p>
+        </div>
+
+        <!-- Заявка -->
+        <div class="panel" id="order">
+          <h3>Заявка на заказ</h3>
+          <p class="sub">Заполни — откроем WhatsApp и сообщение уже будет готово.</p>
+
+          <form id="orderForm">
+            <div class="formRow">
+              <div>
+                <label>Имя</label>
+                <input name="name" required placeholder="Как к вам обращаться?" />
+              </div>
+              <div>
+                <label>Телефон</label>
+                <input name="phone" required placeholder="+7..." />
+              </div>
+            </div>
+
+            <label>Что гравируем?</label>
+            <select name="type" required>
+              <option value="" disabled selected>Выбери вариант</option>
+              <option>Зеркало</option>
+              <option>Фары</option>
+              <option>И зеркала, и фары</option>
+            </select>
+
+            <label>Текст/идея</label>
+            <textarea name="idea" placeholder="Например: никнейм, логотип, короткая фраза..."></textarea>
+
+            <label>Ссылка на фото (если есть)</label>
+            <input name="photo_link" placeholder="Ссылка на фото/референс (Drive, TG и т.д.)" />
+
+            <!-- ✅ без иконки WhatsApp -->
+            <button class="btn btnWA" type="submit" style="margin-top:12px; width:100%; justify-content:center;">
+              Отправить в WhatsApp
+            </button>
+
+            <div id="orderToast" class="toast"></div>
+            <div class="hint">Если WhatsApp не установлен, откроется web-версия.</div>
+          </form>
+        </div>
+
+        <!-- Отзывы -->
+        <div class="panel" id="reviews">
+          <h3>Отзывы</h3>
+          <p class="sub">Первые отзывы можно добавить прямо тут.</p>
+
+          <form id="reviewForm">
+            <div class="formRow">
+              <div>
+                <label>Имя</label>
+                <input id="rName" required placeholder="Имя или ник" />
+              </div>
+              <div>
+                <label>Оценка</label>
+                <select id="rStars" required>
+                  <option value="" disabled selected>Выбери</option>
+                  <option value="5">★★★★★ (5)</option>
+                  <option value="4">★★★★☆ (4)</option>
+                  <option value="3">★★★☆☆ (3)</option>
+                  <option value="2">★★☆☆☆ (2)</option>
+                  <option value="1">★☆☆☆☆ (1)</option>
+                </select>
+              </div>
+            </div>
+
+            <label>Текст отзыва</label>
+            <textarea id="rText" required placeholder="Как всё прошло? Что понравилось?"></textarea>
+
+            <button class="btn btnPrimary" type="submit" style="margin-top:12px; width:100%; justify-content:center;">
+              Добавить отзыв
+            </button>
+
+            <div id="reviewToast" class="toast"></div>
+          </form>
+
+          <div class="reviewsList" id="reviewsList"></div>
+
+          <button class="btn" id="clearReviewsBtn" type="button" style="margin-top:12px; width:100%; justify-content:center;">
+            Очистить отзывы (локально)
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="footerGrid">
+        <div>© <span id="year"></span> АннКарДекор</div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; font-weight:600;">
+          <span>Тел.: <b style="color:var(--text); font-weight:800;">+7 (914) 286-28-03</b></span>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    const PHONE_DISPLAY = "+7 (914) 286-28-03";
+    const WA_PHONE = "79142862803";
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    function openWhatsApp(message){
+      const text = encodeURIComponent(message);
+      const url = `https://wa.me/${WA_PHONE}?text=${text}`;
+      window.open(url, "_blank");
+    }
+
+    const helloMsg = "Здравствуйте! Хочу оформить заявку в АннКарДекор 👋";
+
+    // WA buttons (без иконок, только текст)
+    ["waHeaderBtn","waHeroBtn","waContactsBtn"].forEach(id=>{
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.addEventListener("click",(e)=>{ e.preventDefault(); openWhatsApp(helloMsg); });
+    });
+
+    document.getElementById("waPortfolioBtn")?.addEventListener("click", (e) => {
+      e.preventDefault();
+      openWhatsApp("Здравствуйте! Хочу такую же гравировку, можно консультацию? 👋");
+    });
+
+    // Copy phone (2 кнопки)
+    async function copyPhone(){
+      try{
+        await navigator.clipboard.writeText(PHONE_DISPLAY);
+        alert("Номер скопирован: " + PHONE_DISPLAY);
+      }catch(e){
+        alert("Не получилось скопировать. Вот номер: " + PHONE_DISPLAY);
+      }
+    }
+    document.getElementById("copyPhoneBtn")?.addEventListener("click", copyPhone);
+    document.getElementById("copyPhoneBtn2")?.addEventListener("click", copyPhone);
+
+    // Order form → WhatsApp
+    const orderForm = document.getElementById("orderForm");
+    const orderToast = document.getElementById("orderToast");
+
+    function buildOrderMessage(formEl){
+      const fd = new FormData(formEl);
+      const name = (fd.get("name") || "").toString().trim();
+      const phone = (fd.get("phone") || "").toString().trim();
+      const type = (fd.get("type") || "").toString().trim();
+      const idea = (fd.get("idea") || "").toString().trim();
+      const link = (fd.get("photo_link") || "").toString().trim();
+
+      return [
+        "Здравствуйте! Хочу оформить заявку в АннКарДекор 👋",
+        "",
+        `Имя: ${name || "-"}`,
+        `Телефон: ${phone || "-"}`,
+        `Что гравируем: ${type || "-"}`,
+        `Идея/текст: ${idea || "-"}`,
+        `Ссылка на фото: ${link || "-"}`,
+      ].join("\n");
+    }
+
+    orderForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const message = buildOrderMessage(orderForm);
+      orderToast.className = "toast ok";
+      orderToast.textContent = "Открываю WhatsApp…";
+      openWhatsApp(message);
+    });
+
+    // Reviews (local)
+    const KEY = "anncardecor_reviews_v2";
+    const reviewsList = document.getElementById("reviewsList");
+    const reviewForm = document.getElementById("reviewForm");
+    const reviewToast = document.getElementById("reviewToast");
+
+    function loadReviews(){
+      try{ return JSON.parse(localStorage.getItem(KEY) || "[]"); }
+      catch(e){ return []; }
+    }
+    function saveReviews(items){
+      localStorage.setItem(KEY, JSON.stringify(items));
+    }
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function renderReviews(){
+      const items = loadReviews();
+      if(items.length === 0){
+        reviewsList.innerHTML = `
+          <div class="review">
+            <div class="reviewTop">
+              <div><b style="font-weight:800;">Пока нет отзывов</b><br/><small>Будь первым — оставь отзыв выше.</small></div>
+              <div class="stars">☆☆☆☆☆</div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      reviewsList.innerHTML = items
+        .slice().reverse()
+        .map(r => `
+          <div class="review">
+            <div class="reviewTop">
+              <div>
+                <b style="font-weight:800;">${escapeHtml(r.name)}</b><br/>
+                <small>${new Date(r.ts).toLocaleString("ru-RU")}</small>
+              </div>
+              <div class="stars">${"★".repeat(r.stars)}${"☆".repeat(5 - r.stars)}</div>
+            </div>
+            <p>${escapeHtml(r.text)}</p>
+          </div>
+        `).join("");
+    }
+
+    reviewForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = document.getElementById("rName").value.trim();
+      const stars = Number(document.getElementById("rStars").value);
+      const text = document.getElementById("rText").value.trim();
+
+      if(!name || !stars || !text){
+        reviewToast.className = "toast bad";
+        reviewToast.textContent = "Заполни имя, оценку и текст отзыва.";
+        return;
+      }
+
+      const items = loadReviews();
+      items.push({ name, stars, text, ts: Date.now() });
+      saveReviews(items);
+
+      reviewToast.className = "toast ok";
+      reviewToast.textContent = "Отзыв добавлен! Спасибо 🙌";
+      reviewForm.reset();
+      renderReviews();
+    });
+
+    document.getElementById("clearReviewsBtn").addEventListener("click", () => {
+      if(confirm("Удалить все отзывы на этом устройстве?")){
+        localStorage.removeItem(KEY);
+        renderReviews();
+      }
+    });
+
+    renderReviews();
+  </script>
+</body>
+</html>
