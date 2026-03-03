@@ -3,23 +3,846 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>АннКарДекор</title>
+  <title>АннКарДекор — гравировка зеркал и фар</title>
+  <meta name="description" content="АннКарДекор — гравировка зеркал и фар. Заявка в WhatsApp, портфолио и отзывы." />
+
   <style>
-    body{margin:0;min-height:100vh;display:grid;place-items:center;background:#070814;color:#e9ecff;font-family:system-ui}
-    .box{padding:24px 20px;border-radius:18px;border:1px solid rgba(255,255,255,.12);
-      background:linear-gradient(135deg, rgba(57,160,255,.12), rgba(168,85,247,.12));
-      text-align:center; max-width:700px}
-    h1{margin:0 0 8px;font-size:34px}
-    p{margin:0;color:rgba(233,236,255,.75)}
-    a{color:#a855f7}
+    :root{
+      --bg0:#070814;
+      --bg1:#0b0f2a;
+      --card: rgba(255,255,255,.06);
+      --stroke: rgba(255,255,255,.12);
+      --text:#e9ecff;
+      --muted: rgba(233,236,255,.72);
+      --blue:#39a0ff;
+      --violet:#a855f7;
+      --pink:#ff4fd8;
+      --good:#4ade80;
+      --bad:#fb7185;
+      --wa:#25D366;
+
+      --shadow: 0 20px 80px rgba(0,0,0,.55);
+      --radius: 22px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(57,160,255,.20), transparent 55%),
+        radial-gradient(900px 500px at 80% 20%, rgba(168,85,247,.22), transparent 55%),
+        radial-gradient(900px 700px at 50% 90%, rgba(255,79,216,.12), transparent 60%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      overflow-x:hidden;
+    }
+
+    .aurora{
+      position:fixed; inset:-30vh -30vw;
+      background:
+        radial-gradient(60vw 40vh at 20% 30%, rgba(57,160,255,.12), transparent 60%),
+        radial-gradient(50vw 45vh at 70% 35%, rgba(168,85,247,.12), transparent 60%),
+        radial-gradient(55vw 50vh at 55% 80%, rgba(255,79,216,.06), transparent 60%);
+      filter: blur(30px);
+      animation: float 10s ease-in-out infinite alternate;
+      pointer-events:none;
+      z-index:-1;
+    }
+    @keyframes float{
+      from{ transform: translate3d(-1%, -1%, 0) scale(1.02); }
+      to{ transform: translate3d(1.2%, 1.4%, 0) scale(1.04); }
+    }
+
+    a{ color:inherit; text-decoration:none; }
+    .wrap{ width:min(1100px, 92vw); margin:0 auto; }
+
+    header{
+      position:sticky; top:0;
+      backdrop-filter: blur(10px);
+      background: rgba(7,8,20,.55);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      z-index:10;
+    }
+    .nav{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 0;
+      gap:12px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      letter-spacing:.6px;
+    }
+    .logoMark{
+      width:40px; height:40px; border-radius:14px;
+      background:
+        linear-gradient(135deg, rgba(57,160,255,.9), rgba(168,85,247,.9));
+      box-shadow: 0 0 0 1px rgba(255,255,255,.16), 0 10px 30px rgba(57,160,255,.18);
+      position:relative;
+      overflow:hidden;
+    }
+    .logoMark:after{
+      content:"";
+      position:absolute; inset:-40%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.5), transparent 55%);
+      transform: rotate(20deg);
+    }
+    .brandTitle{
+      font-weight:700;
+      display:flex; flex-direction:column; line-height:1.05;
+    }
+    .brandTitle small{ color:var(--muted); font-weight:500; font-size:12px; margin-top:2px; }
+
+    .navLinks{
+      display:flex; gap:18px; align-items:center;
+      color:var(--muted);
+      font-size:14px;
+    }
+    .navLinks a{ padding:8px 10px; border-radius:12px; }
+    .navLinks a:hover{ background: rgba(255,255,255,.06); color:var(--text); }
+
+    .cta{
+      display:flex; gap:10px; align-items:center;
+    }
+    .btn{
+      border:none; cursor:pointer;
+      padding:10px 14px;
+      border-radius:14px;
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow: 0 10px 25px rgba(0,0,0,.25);
+      font-weight:600;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .btn:hover{ background: rgba(255,255,255,.10); }
+    .btnPrimary{
+      background: linear-gradient(135deg, rgba(57,160,255,.95), rgba(168,85,247,.95));
+      border:1px solid rgba(255,255,255,.16);
+      box-shadow: 0 18px 45px rgba(57,160,255,.18);
+    }
+    .btnPrimary:hover{ filter: brightness(1.04); }
+
+    .btnWA{
+      background: rgba(37, 211, 102, .12);
+      border: 1px solid rgba(37, 211, 102, .30);
+      box-shadow: 0 18px 45px rgba(37, 211, 102, .12);
+    }
+    .btnWA:hover{ background: rgba(37, 211, 102, .18); }
+    .icon{ width:18px; height:18px; display:inline-block; }
+
+    .hero{ padding:56px 0 26px; position:relative; }
+    .heroGrid{
+      display:grid;
+      grid-template-columns: 1.3fr .9fr;
+      gap:22px;
+      align-items:stretch;
+    }
+    .card{
+      background: var(--card);
+      border:1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .heroMain{ padding:26px 26px 22px; overflow:hidden; position:relative; }
+    .badge{
+      display:inline-flex; gap:8px; align-items:center;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.05);
+      color:var(--muted);
+      font-size:13px;
+    }
+    .dot{
+      width:10px; height:10px; border-radius:999px;
+      background: linear-gradient(135deg, var(--blue), var(--violet));
+      box-shadow: 0 0 18px rgba(168,85,247,.45);
+    }
+    h1{
+      margin:14px 0 10px;
+      font-size: clamp(30px, 4vw, 46px);
+      letter-spacing:.2px;
+      line-height:1.05;
+    }
+    .lead{
+      color:var(--muted);
+      font-size:16px;
+      line-height:1.55;
+      max-width: 60ch;
+    }
+    .heroActions{
+      display:flex; flex-wrap:wrap;
+      gap:10px;
+      margin-top:16px;
+      align-items:center;
+    }
+    .mini{
+      display:flex; gap:14px; flex-wrap:wrap;
+      margin-top:18px;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .pill{
+      display:flex; gap:8px; align-items:center;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.12);
+    }
+    .pill svg{ opacity:.9; }
+
+    .heroSide{
+      padding:18px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .neonFrame{
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.12);
+      background:
+        radial-gradient(600px 220px at 20% 10%, rgba(57,160,255,.20), transparent 60%),
+        radial-gradient(450px 220px at 80% 30%, rgba(168,85,247,.22), transparent 60%),
+        rgba(0,0,0,.14);
+      padding:16px;
+      position:relative;
+      overflow:hidden;
+      min-height:180px;
+    }
+    .neonFrame:before{
+      content:"";
+      position:absolute; inset:-2px;
+      border-radius: 18px;
+      padding:2px;
+      background: linear-gradient(135deg, rgba(57,160,255,.55), rgba(168,85,247,.55), rgba(255,79,216,.25));
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+              mask-composite: exclude;
+      pointer-events:none;
+    }
+    .stat{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+    .statItem{
+      padding:12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+    }
+    .statItem b{ display:block; font-size:18px; }
+    .statItem small{ color:var(--muted); }
+
+    section{ padding:22px 0; }
+    .sectionHead{
+      display:flex; align-items:end; justify-content:space-between;
+      gap:14px;
+      margin-bottom:12px;
+    }
+    .sectionHead h2{ margin:0; font-size:22px; letter-spacing:.2px; }
+    .sectionHead p{ margin:0; color:var(--muted); font-size:14px; }
+
+    .grid3{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:14px;
+    }
+    .svc{
+      padding:16px;
+      border-radius:18px;
+      background: rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.10);
+      min-height: 130px;
+      position:relative;
+      overflow:hidden;
+    }
+    .svc:after{
+      content:"";
+      position:absolute; inset:-40%;
+      background: radial-gradient(circle at 20% 20%, rgba(57,160,255,.14), transparent 55%),
+                  radial-gradient(circle at 70% 40%, rgba(168,85,247,.12), transparent 60%);
+      filter: blur(18px);
+      transform: rotate(10deg);
+      pointer-events:none;
+    }
+    .svc h3{ margin:0 0 8px; font-size:16px; }
+    .svc p{ margin:0; color:var(--muted); font-size:14px; line-height:1.5; }
+    .svc .tag{
+      display:inline-flex;
+      margin-top:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.14);
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .gallery{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:14px;
+      align-items:stretch;
+    }
+    .shot{
+      border-radius:20px;
+      border:1px solid rgba(255,255,255,.10);
+      background:
+        radial-gradient(900px 300px at 20% 20%, rgba(57,160,255,.18), transparent 60%),
+        radial-gradient(700px 320px at 75% 30%, rgba(168,85,247,.18), transparent 60%),
+        rgba(0,0,0,.18);
+      position:relative;
+      overflow:hidden;
+      min-height: 280px;
+    }
+    .shot .overlay{
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,.55));
+    }
+    .shot .caption{
+      position:absolute; left:18px; right:18px; bottom:16px;
+      display:flex; justify-content:space-between; align-items:end; gap:14px;
+    }
+    .caption b{ font-size:16px; }
+    .caption small{ color:var(--muted); display:block; margin-top:4px; }
+    .thumbs{ display:grid; grid-template-columns: 1fr; gap:14px; }
+    .thumb{
+      min-height: 133px;
+      border-radius:20px;
+      border:1px solid rgba(255,255,255,.10);
+      background:
+        radial-gradient(500px 220px at 30% 30%, rgba(57,160,255,.16), transparent 60%),
+        radial-gradient(500px 220px at 70% 40%, rgba(168,85,247,.14), transparent 60%),
+        rgba(0,0,0,.18);
+      position:relative;
+      overflow:hidden;
+    }
+    .thumb:after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,.55));
+    }
+    .thumb span{
+      position:absolute; left:14px; bottom:12px; z-index:1;
+      color:var(--muted); font-size:13px;
+    }
+
+    .forms{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
+    form{
+      padding:16px;
+      border-radius:20px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+    }
+    label{ display:block; margin:10px 0 6px; color:var(--muted); font-size:13px; }
+    input, textarea, select{
+      width:100%;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.20);
+      color:var(--text);
+      outline:none;
+    }
+    textarea{ min-height:110px; resize:vertical; }
+    input:focus, textarea:focus, select:focus{
+      border-color: rgba(57,160,255,.55);
+      box-shadow: 0 0 0 4px rgba(57,160,255,.14);
+    }
+    .formRow{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+    .hint{ margin-top:10px; color:var(--muted); font-size:12px; line-height:1.4; }
+    .toast{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:14px;
+      display:none;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      color:var(--muted);
+    }
+    .toast.ok{ display:block; border-color: rgba(74,222,128,.35); color: rgba(209,250,229,.95); }
+    .toast.bad{ display:block; border-color: rgba(251,113,133,.35); color: rgba(255,228,230,.95); }
+
+    .reviewsList{ margin-top:12px; display:grid; gap:10px; }
+    .review{
+      padding:12px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.16);
+    }
+    .reviewTop{
+      display:flex; justify-content:space-between; gap:12px; align-items:flex-start;
+    }
+    .stars{ letter-spacing:2px; color: rgba(255,255,255,.85); }
+    .review small{ color:var(--muted); }
+    .review p{ margin:8px 0 0; color:rgba(233,236,255,.9); line-height:1.5; }
+
+    footer{ padding:26px 0 40px; color:var(--muted); font-size:13px; }
+    .footerGrid{
+      display:flex; flex-wrap:wrap;
+      justify-content:space-between;
+      gap:12px;
+      border-top: 1px solid rgba(255,255,255,.06);
+      padding-top:16px;
+    }
+
+    @media (max-width: 920px){
+      .heroGrid{ grid-template-columns: 1fr; }
+      .gallery{ grid-template-columns: 1fr; }
+      .thumbs{ grid-template-columns: 1fr 1fr; }
+      .grid3{ grid-template-columns: 1fr; }
+      .forms{ grid-template-columns: 1fr; }
+      .navLinks{ display:none; }
+    }
   </style>
 </head>
+
 <body>
-  <div class="box">
-    <h1>АннКарДекор</h1>
-    <p>GitHub Pages работает ✅</p>
-    <p>Тел: +7 (914) 286-28-03 • WhatsApp: <a href="https://wa.me/79142862803" target="_blank">написать</a></p>
-  </div>
+  <div class="aurora" aria-hidden="true"></div>
+
+  <header>
+    <div class="wrap">
+      <div class="nav">
+        <div class="brand">
+          <div class="logoMark" aria-hidden="true"></div>
+          <div class="brandTitle">
+            АннКарДекор
+            <small>Гравировка зеркал и фар</small>
+          </div>
+        </div>
+
+        <nav class="navLinks" aria-label="Навигация">
+          <a href="#about">О студии</a>
+          <a href="#services">Услуги</a>
+          <a href="#portfolio">Портфолио</a>
+          <a href="#order">Заявка</a>
+          <a href="#reviews">Отзывы</a>
+        </nav>
+
+        <div class="cta">
+          <button class="btn" id="copyPhoneBtn" type="button">Скопировать номер</button>
+
+          <a class="btn btnWA" id="waHeaderBtn" href="#" aria-label="Написать в WhatsApp">
+            <svg class="icon" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+              <path d="M16 3C9.4 3 4 8.1 4 14.4c0 2.5.9 4.8 2.4 6.7L5 29l8.3-1.3c1.8.9 3.9 1.5 6.1 1.5 6.6 0 12-5.1 12-11.4C31.4 8.1 22.6 3 16 3Z" stroke="currentColor" stroke-width="1.6" opacity=".95"/>
+              <path d="M12.8 10.6c-.4-.9-.8-.9-1.2-.9h-1c-.3 0-.8.1-1.2.6-.4.4-1.6 1.5-1.6 3.7s1.6 4.2 1.8 4.5c.2.3 3.1 4.8 7.6 6.5 3.7 1.4 4.5 1.1 5.3 1 .8-.1 2.6-1 3-2.1.4-1 .4-1.9.3-2.1-.1-.2-.4-.3-.8-.5s-2.6-1.2-3-1.3c-.4-.2-.8-.2-1.1.2-.3.4-1.3 1.3-1.6 1.6-.3.3-.6.3-1 .1-.4-.2-1.9-.7-3.6-2.2-1.3-1.1-2.2-2.5-2.4-2.9-.2-.4 0-.6.2-.8.2-.2.4-.5.6-.7.2-.2.3-.4.4-.7.1-.3 0-.5-.1-.7-.1-.2-1.1-2.7-1.5-3.6Z" fill="currentColor" opacity=".95"/>
+            </svg>
+            Написать в WhatsApp
+          </a>
+
+          <a class="btn btnPrimary" href="#order">Оставить заявку</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero" id="about">
+      <div class="heroGrid">
+        <div class="card heroMain">
+          <div class="badge"><span class="dot"></span>Неон-детейлинг стиль • Синий → Фиолетовый</div>
+          <h1>Гравировка зеркал и фар, которая выглядит как бренд.</h1>
+          <p class="lead">
+            Студия <b>АннКарДекор</b> делает аккуратную гравировку на зеркалах и оптике: имена, логотипы, надписи,
+            элементы дизайна. Оставь заявку — откроем WhatsApp и подготовим сообщение.
+          </p>
+
+          <div class="heroActions">
+            <a class="btn btnWA" id="waHeroBtn" href="#">
+              <svg class="icon" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+                <path d="M16 3C9.4 3 4 8.1 4 14.4c0 2.5.9 4.8 2.4 6.7L5 29l8.3-1.3c1.8.9 3.9 1.5 6.1 1.5 6.6 0 12-5.1 12-11.4C31.4 8.1 22.6 3 16 3Z" stroke="currentColor" stroke-width="1.6" opacity=".95"/>
+                <path d="M12.8 10.6c-.4-.9-.8-.9-1.2-.9h-1c-.3 0-.8.1-1.2.6-.4.4-1.6 1.5-1.6 3.7s1.6 4.2 1.8 4.5c.2.3 3.1 4.8 7.6 6.5 3.7 1.4 4.5 1.1 5.3 1 .8-.1 2.6-1 3-2.1.4-1 .4-1.9.3-2.1-.1-.2-.4-.3-.8-.5s-2.6-1.2-3-1.3c-.4-.2-.8-.2-1.1.2-.3.4-1.3 1.3-1.6 1.6-.3.3-.6.3-1 .1-.4-.2-1.9-.7-3.6-2.2-1.3-1.1-2.2-2.5-2.4-2.9-.2-.4 0-.6.2-.8.2-.2.4-.5.6-.7.2-.2.3-.4.4-.7.1-.3 0-.5-.1-.7-.1-.2-1.1-2.7-1.5-3.6Z" fill="currentColor" opacity=".95"/>
+              </svg>
+              Написать в WhatsApp
+            </a>
+
+            <a class="btn" href="#portfolio">Посмотреть работы</a>
+          </div>
+
+          <div class="mini">
+            <div class="pill">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V6l-8-4-8 4v6c0 6 8 10 8 10Z" stroke="currentColor" stroke-width="1.6"/></svg>
+              Безопасно для поверхности
+            </div>
+            <div class="pill">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 7 10 17l-5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Чистые линии и контуры
+            </div>
+            <div class="pill">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" stroke="currentColor" stroke-width="1.6"/></svg>
+              Быстрые сроки
+            </div>
+          </div>
+        </div>
+
+        <aside class="card heroSide">
+          <div class="neonFrame">
+            <b style="font-size:16px;">Контакты</b>
+            <div style="margin-top:10px; color: var(--muted); line-height:1.55;">
+              Телефон: <b style="color:var(--text);">+7 (914) 286-28-03</b><br/>
+              Instagram / Telegram: <b style="color:var(--text);">AnnCarDecor</b>
+            </div>
+
+            <div class="stat">
+              <div class="statItem">
+                <b>Зеркала</b>
+                <small>заднего/боковые</small>
+              </div>
+              <div class="statItem">
+                <b>Фары</b>
+                <small>любые элементы</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="neonFrame" style="min-height:140px;">
+            <b style="font-size:16px;">Быстрая заявка</b>
+            <div style="margin-top:10px; color:var(--muted);">
+              Нажми — и откроется WhatsApp с готовым сообщением.
+            </div>
+            <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+              <button class="btn btnWA" type="button" id="waQuickMirrorBtn">
+                <span class="icon" aria-hidden="true">🪞</span> Зеркало
+              </button>
+              <button class="btn btnWA" type="button" id="waQuickHeadlightBtn">
+                <span class="icon" aria-hidden="true">💡</span> Фары
+              </button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="services">
+      <div class="sectionHead">
+        <div>
+          <h2>Услуги</h2>
+          <p>Коротко и по делу — что делаем в студии.</p>
+        </div>
+      </div>
+
+      <div class="grid3">
+        <div class="svc">
+          <h3>Гравировка зеркал</h3>
+          <p>Надпись или логотип на зеркале заднего вида. Акцентно и стильно.</p>
+          <span class="tag">Точное позиционирование</span>
+        </div>
+        <div class="svc">
+          <h3>Гравировка фар</h3>
+          <p>Эмблемы, элементы рисунка, подписи. Можно под концепт авто.</p>
+          <span class="tag">Чистые контуры</span>
+        </div>
+        <div class="svc">
+          <h3>Дизайн-макет</h3>
+          <p>Поможем подобрать шрифт/композицию под неон-стиль и бренд.</p>
+          <span class="tag">Синий → Фиолетовый</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="portfolio">
+      <div class="sectionHead">
+        <div>
+          <h2>Портфолио</h2>
+          <p>Сюда можно вставить фото работ (ниже — места под картинки).</p>
+        </div>
+      </div>
+
+      <div class="gallery">
+        <div class="shot">
+          <div class="overlay"></div>
+          <div class="caption">
+            <div>
+              <b>Лучшие работы</b>
+              <small>Замени фон на реальные фото — будет топ.</small>
+            </div>
+            <a class="btn btnWA" id="waPortfolioBtn" href="#">Хочу так же</a>
+          </div>
+        </div>
+
+        <div class="thumbs">
+          <div class="thumb"><span>Зеркало — логотип</span></div>
+          <div class="thumb"><span>Фары — подпись</span></div>
+        </div>
+      </div>
+      <p class="hint">Подсказка: позже можно сделать галерею/слайдер — скажешь, добавлю.</p>
+    </section>
+
+    <section id="order">
+      <div class="sectionHead">
+        <div>
+          <h2>Заявка на заказ</h2>
+          <p>Заполни — откроем WhatsApp и сообщение уже будет готово.</p>
+        </div>
+      </div>
+
+      <div class="forms">
+        <form id="orderForm">
+          <h3 style="margin:0 0 6px;">Оставить заявку</h3>
+          <p style="margin:0; color:var(--muted); font-size:13px;">После отправки откроется WhatsApp.</p>
+
+          <div class="formRow">
+            <div>
+              <label>Имя</label>
+              <input name="name" required placeholder="Как к вам обращаться?" />
+            </div>
+            <div>
+              <label>Телефон</label>
+              <input name="phone" required placeholder="+7..." />
+            </div>
+          </div>
+
+          <label>Что гравируем?</label>
+          <select name="type" required>
+            <option value="" disabled selected>Выбери вариант</option>
+            <option>Зеркало</option>
+            <option>Фары</option>
+            <option>И зеркала, и фары</option>
+          </select>
+
+          <label>Текст/идея (что написать/нарисовать)</label>
+          <textarea name="idea" placeholder="Например: никнейм, логотип, короткая фраза..."></textarea>
+
+          <label>Ссылка на фото (если есть)</label>
+          <input name="photo_link" placeholder="Ссылка на фото/референс (Google Drive, VK, TG и т.д.)" />
+
+          <button class="btn btnWA" type="submit" style="margin-top:12px;">
+            <svg class="icon" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+              <path d="M16 3C9.4 3 4 8.1 4 14.4c0 2.5.9 4.8 2.4 6.7L5 29l8.3-1.3c1.8.9 3.9 1.5 6.1 1.5 6.6 0 12-5.1 12-11.4C31.4 8.1 22.6 3 16 3Z" stroke="currentColor" stroke-width="1.6" opacity=".95"/>
+              <path d="M12.8 10.6c-.4-.9-.8-.9-1.2-.9h-1c-.3 0-.8.1-1.2.6-.4.4-1.6 1.5-1.6 3.7s1.6 4.2 1.8 4.5c.2.3 3.1 4.8 7.6 6.5 3.7 1.4 4.5 1.1 5.3 1 .8-.1 2.6-1 3-2.1.4-1 .4-1.9.3-2.1-.1-.2-.4-.3-.8-.5s-2.6-1.2-3-1.3c-.4-.2-.8-.2-1.1.2-.3.4-1.3 1.3-1.6 1.6-.3.3-.6.3-1 .1-.4-.2-1.9-.7-3.6-2.2-1.3-1.1-2.2-2.5-2.4-2.9-.2-.4 0-.6.2-.8.2-.2.4-.5.6-.7.2-.2.3-.4.4-.7.1-.3 0-.5-.1-.7-.1-.2-1.1-2.7-1.5-3.6Z" fill="currentColor" opacity=".95"/>
+            </svg>
+            Отправить в WhatsApp
+          </button>
+
+          <div id="orderToast" class="toast"></div>
+          <div class="hint">Если WhatsApp не установлен, откроется web-версия.</div>
+        </form>
+
+        <form id="reviewForm">
+          <h3 style="margin:0 0 6px;">Оставить отзыв</h3>
+          <p style="margin:0; color:var(--muted); font-size:13px;">Отзывы сохраняются на этом устройстве (для старта).</p>
+
+          <div class="formRow">
+            <div>
+              <label>Имя</label>
+              <input id="rName" required placeholder="Имя или ник" />
+            </div>
+            <div>
+              <label>Оценка</label>
+              <select id="rStars" required>
+                <option value="" disabled selected>Выбери</option>
+                <option value="5">★★★★★ (5)</option>
+                <option value="4">★★★★☆ (4)</option>
+                <option value="3">★★★☆☆ (3)</option>
+                <option value="2">★★☆☆☆ (2)</option>
+                <option value="1">★☆☆☆☆ (1)</option>
+              </select>
+            </div>
+          </div>
+
+          <label>Текст отзыва</label>
+          <textarea id="rText" required placeholder="Как всё прошло? Что понравилось?"></textarea>
+
+          <button class="btn btnPrimary" type="submit" style="margin-top:12px;">Добавить отзыв</button>
+          <div id="reviewToast" class="toast"></div>
+
+          <div class="hint">Позже можно подключить общие отзывы для всех клиентов (Firebase/Sheets).</div>
+        </form>
+      </div>
+    </section>
+
+    <section id="reviews">
+      <div class="sectionHead">
+        <div>
+          <h2>Отзывы</h2>
+          <p>Первые отзывы можно добавить прямо тут.</p>
+        </div>
+        <button class="btn" id="clearReviewsBtn" type="button">Очистить отзывы (локально)</button>
+      </div>
+
+      <div class="reviewsList" id="reviewsList"></div>
+    </section>
+
+    <footer>
+      <div class="footerGrid">
+        <div>© <span id="year"></span> АннКарДекор</div>
+        <div>
+          Тел.: <b style="color:var(--text);">+7 (914) 286-28-03</b> • Instagram/Telegram: <b style="color:var(--text);">AnnCarDecor</b>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    const PHONE_DISPLAY = "+7 (914) 286-28-03";
+    const WA_PHONE = "79142862803";
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    document.getElementById("copyPhoneBtn").addEventListener("click", async () => {
+      try{
+        await navigator.clipboard.writeText(PHONE_DISPLAY);
+        alert("Номер скопирован: " + PHONE_DISPLAY);
+      }catch(e){
+        alert("Не получилось скопировать. Вот номер: " + PHONE_DISPLAY);
+      }
+    });
+
+    function openWhatsApp(message){
+      const text = encodeURIComponent(message);
+      const url = `https://wa.me/${WA_PHONE}?text=${text}`;
+      window.open(url, "_blank");
+    }
+
+    const helloMsg = "Здравствуйте! Хочу оформить заявку в АннКарДекор 👋";
+
+    document.getElementById("waHeaderBtn")?.addEventListener("click", (e) => {
+      e.preventDefault();
+      openWhatsApp(helloMsg);
+    });
+
+    document.getElementById("waHeroBtn")?.addEventListener("click", (e) => {
+      e.preventDefault();
+      openWhatsApp(helloMsg);
+    });
+
+    document.getElementById("waPortfolioBtn")?.addEventListener("click", (e) => {
+      e.preventDefault();
+      openWhatsApp("Здравствуйте! Хочу такую же гравировку, можно консультацию? 👋");
+    });
+
+    document.getElementById("waQuickMirrorBtn")?.addEventListener("click", () => {
+      openWhatsApp("Здравствуйте! Хочу гравировку на ЗЕРКАЛО. Подскажите стоимость и сроки 👋");
+    });
+
+    document.getElementById("waQuickHeadlightBtn")?.addEventListener("click", () => {
+      openWhatsApp("Здравствуйте! Хочу гравировку на ФАРЫ. Подскажите стоимость и сроки 👋");
+    });
+
+    const orderForm = document.getElementById("orderForm");
+    const orderToast = document.getElementById("orderToast");
+
+    function buildOrderMessage(formEl){
+      const fd = new FormData(formEl);
+      const name = (fd.get("name") || "").toString().trim();
+      const phone = (fd.get("phone") || "").toString().trim();
+      const type = (fd.get("type") || "").toString().trim();
+      const idea = (fd.get("idea") || "").toString().trim();
+      const link = (fd.get("photo_link") || "").toString().trim();
+
+      return [
+        "Здравствуйте! Хочу оформить заявку в АннКарДекор 👋",
+        "",
+        `Имя: ${name || "-"}`,
+        `Телефон: ${phone || "-"}`,
+        `Что гравируем: ${type || "-"}`,
+        `Идея/текст: ${idea || "-"}`,
+        `Ссылка на фото: ${link || "-"}`,
+      ].join("\n");
+    }
+
+    orderForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const message = buildOrderMessage(orderForm);
+      orderToast.className = "toast ok";
+      orderToast.textContent = "Открываю WhatsApp…";
+      openWhatsApp(message);
+    });
+
+    // Reviews (localStorage)
+    const KEY = "anncardecor_reviews_v1";
+    const reviewsList = document.getElementById("reviewsList");
+    const reviewForm = document.getElementById("reviewForm");
+    const reviewToast = document.getElementById("reviewToast");
+
+    function loadReviews(){
+      try{ return JSON.parse(localStorage.getItem(KEY) || "[]"); }
+      catch(e){ return []; }
+    }
+    function saveReviews(items){
+      localStorage.setItem(KEY, JSON.stringify(items));
+    }
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function renderReviews(){
+      const items = loadReviews();
+      if(items.length === 0){
+        reviewsList.innerHTML = `
+          <div class="review">
+            <div class="reviewTop">
+              <div><b>Пока нет отзывов</b><br/><small>Будь первым — оставь отзыв выше.</small></div>
+              <div class="stars">☆☆☆☆☆</div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      reviewsList.innerHTML = items
+        .slice().reverse()
+        .map(r => `
+          <div class="review">
+            <div class="reviewTop">
+              <div>
+                <b>${escapeHtml(r.name)}</b><br/>
+                <small>${new Date(r.ts).toLocaleString("ru-RU")}</small>
+              </div>
+              <div class="stars">${"★".repeat(r.stars)}${"☆".repeat(5 - r.stars)}</div>
+            </div>
+            <p>${escapeHtml(r.text)}</p>
+          </div>
+        `).join("");
+    }
+
+    reviewForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = document.getElementById("rName").value.trim();
+      const stars = Number(document.getElementById("rStars").value);
+      const text = document.getElementById("rText").value.trim();
+
+      if(!name || !stars || !text){
+        reviewToast.className = "toast bad";
+        reviewToast.textContent = "Заполни имя, оценку и текст отзыва.";
+        return;
+      }
+
+      const items = loadReviews();
+      items.push({ name, stars, text, ts: Date.now() });
+      saveReviews(items);
+
+      reviewToast.className = "toast ok";
+      reviewToast.textContent = "Отзыв добавлен! Спасибо 🙌";
+      reviewForm.reset();
+      renderReviews();
+    });
+
+    document.getElementById("clearReviewsBtn").addEventListener("click", () => {
+      if(confirm("Удалить все отзывы на этом устройстве?")){
+        localStorage.removeItem(KEY);
+        renderReviews();
+      }
+    });
+
+    renderReviews();
+  </script>
 </body>
 </html>
-
